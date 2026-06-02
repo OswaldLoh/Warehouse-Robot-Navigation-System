@@ -114,7 +114,7 @@ void storeItem(Zone* head, Item* item) {
 // ==================== Display Warehouse ====================
 
 void displayWarehouse(Zone* head) {
-    cout << "\n=============== WAREHOUSE INVENTORY ===============\n";
+    cout << "\n=============== WAREHOUSE INVENTORY ================\n";
 
     Zone* currentZone = head;
     while (currentZone != nullptr) {
@@ -151,7 +151,7 @@ void displayWarehouse(Zone* head) {
         currentZone = currentZone->nextZone;
     }
 
-    cout << "\n===================================================\n";
+    cout << "\n====================================================\n";
 }
 
 // ==================== Accessor ====================

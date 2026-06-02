@@ -23,16 +23,19 @@ void orderManagementMenu() {
     int choice;
 
     do {
-        cout << "\n===== ORDER MANAGEMENT MODULE =====\n";
+        cout << "\n============= ORDER MANAGEMENT MODULE ==============\n";
         cout << "1. Add New Order\n";
-        cout << "2. View All Order Status\n";
-        cout << "3. Back to Main Menu\n";
-        cout << "===================================\n";
-        cout << "Enter choice: ";
+        cout << "2. View Pending Orders\n";
+        cout << "3. View In-Progress Orders\n";
+        cout << "4. View Completed / Failed Orders\n";
+        cout << "5. View All Orders\n";
+        cout << "6. Back to Main Menu\n";
+        cout << "====================================================\n";
+        cout << ">>> ";
         getline(cin, input);
 
-        if (input.length() != 1 || input[0] < '1' || input[0] > '3') {
-            cout << "\nInvalid input. Please enter 1, 2, or 3.\n";
+        if (input.length() != 1 || input[0] < '1' || input[0] > '6') {
+            cout << "\nInvalid input. Please enter a number between 1 and 6.\n";
             continue;
         }
 
@@ -41,10 +44,13 @@ void orderManagementMenu() {
 
         switch (choice) {
             case 1: addOrder(); break;
-            case 2: viewOrderStatus(); break;
-            case 3: break;
+            case 2: viewPendingOrders(); break;
+            case 3: viewInProgressOrders(); break;
+            case 4: viewCompletedOrders(); break;
+            case 5: viewOrderStatus(); break;
+            case 6: break;
         }
-    } while (choice != 3);
+    } while (choice != 6);
 }
 
 // Module 2: Robot Assignment
@@ -53,13 +59,13 @@ void robotAssignmentMenu() {
     int choice;
 
     do {
-        cout << "\n===== ROBOT ASSIGNMENT MODULE =====\n";
+        cout << "\n============= ROBOT ASSIGNMENT MODULE ==============\n";
         cout << "1. Assign Pending Orders to Robots\n";
         cout << "2. View Robot Status\n";
         cout << "3. Robot Maintenance\n";
         cout << "4. Back to Main Menu\n";
-        cout << "===================================\n";
-        cout << "Enter choice: ";
+        cout << "====================================================\n";
+        cout << ">>> ";
         getline(cin, input);
 
         if (input.length() != 1 || input[0] < '1' || input[0] > '4') {
@@ -85,13 +91,13 @@ void navigationMenu() {
     int choice;
 
     do {
-        cout << "\n===== ROBOT NAVIGATION & PATH TRACKING MODULE =====\n";
+        cout << "\n===== ROBOT NAVIGATION & PATH TRACKING MODULE ======\n";
         cout << "1. Complete Next In-Progress Order\n";
         cout << "2. View Robot Navigation Log\n";
         cout << "3. View All Navigation History\n";
         cout << "4. Back to Main Menu\n";
         cout << "====================================================\n";
-        cout << "Enter choice: ";
+        cout << ">>> ";
         getline(cin, input);
 
         if (input.length() != 1 || input[0] < '1' || input[0] > '4') {
@@ -118,7 +124,7 @@ void itemSearchMenu() {
     int choice;
 
     do {
-        cout << "\n===== ITEM SEARCH & MANAGEMENT MODULE =====\n";
+        cout << "\n========= ITEM SEARCH & MANAGEMENT MODULE ==========\n";
         cout << "1. View Warehouse Inventory\n";
         cout << "2. Search Item by ID\n";
         cout << "3. Insert New Item\n";
@@ -126,8 +132,8 @@ void itemSearchMenu() {
         cout << "5. Delete Item\n";
         cout << "6. Display Items (Sorted by ID)\n";
         cout << "7. Back to Main Menu\n";
-        cout << "============================================\n";
-        cout << "Enter choice: ";
+        cout << "====================================================\n";
+        cout << ">>> ";
         getline(cin, input);
 
         if (input.length() != 1 || input[0] < '1' || input[0] > '7') {
@@ -156,11 +162,11 @@ void warehouseLayoutMenu() {
     int choice;
 
     do {
-        cout << "\n===== WAREHOUSE LAYOUT & NAVIGATION MODULE =====\n";
+        cout << "\n======= WAREHOUSE LAYOUT & NAVIGATION MODULE =======\n";
         cout << "1. View Warehouse Layout\n";
         cout << "2. Back to Main Menu\n";
-        cout << "=================================================\n";
-        cout << "Enter choice: ";
+        cout << "====================================================\n";
+        cout << ">>> ";
         getline(cin, input);
 
         if (input.length() != 1 || input[0] < '1' || input[0] > '2') {
@@ -199,15 +205,15 @@ int main() {
     string input;
 
     do {
-        cout << "\n========== WAREHOUSE ROBOT NAVIGATION SYSTEM ==========\n";
+        cout << "\n======== WAREHOUSE ROBOT NAVIGATION SYSTEM =========\n";
         cout << "1. Order Management Module\n";
         cout << "2. Robot Assignment Module\n";
         cout << "3. Robot Navigation & Path Tracking Module\n";
         cout << "4. Item Search & Management Module\n";
         cout << "5. Warehouse Layout & Navigation Module\n";
         cout << "0. Exit\n";
-        cout << "========================================================\n";
-        cout << "Enter choice: ";
+        cout << "====================================================\n";
+        cout << ">>> ";
         getline(cin, input);
 
         // Input validation: must be a single digit 0-5

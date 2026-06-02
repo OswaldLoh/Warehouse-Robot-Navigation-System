@@ -66,6 +66,9 @@ extern int orderCounter;
 void addOrder();
 void assignOrders();
 void viewOrderStatus();
+void viewPendingOrders();
+void viewInProgressOrders();
+void viewCompletedOrders();
 
 
 #endif

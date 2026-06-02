@@ -159,7 +159,7 @@ void assignOrders() {
 
 // Display all order statuses across the 3 data structures
 void viewOrderStatus() {
-    cout << "\n=============== ORDER STATUS ===============\n";
+    cout << "\n=================== ORDER STATUS ===================\n";
 
     cout << "\n[PENDING] (" << pendingOrders.getCount() << " orders)\n";
     if (pendingOrders.isEmpty()) cout << "  (none)\n";
@@ -169,9 +169,42 @@ void viewOrderStatus() {
     if (inProgressOrders.isEmpty()) cout << "  (none)\n";
     else inProgressOrders.display();
 
-    cout << "\n[COMPLETED] (" << completedOrders.getCount() << " orders)\n";
+    cout << "\n[COMPLETED / FAILED] (" << completedOrders.getCount() << " orders)\n";
     if (completedOrders.isEmpty()) cout << "  (none)\n";
     else completedOrders.display();
 
-    cout << "\n============================================\n";
+    cout << "\n====================================================\n";
+}
+
+// Display only pending orders
+void viewPendingOrders() {
+    if (pendingOrders.isEmpty()) {
+        cout << "No pending orders.\n";
+        return;
+    }
+    cout << "\n========== PENDING ORDERS (" << pendingOrders.getCount() << "/5) ==========\n";
+    pendingOrders.display();
+    cout << "====================================================\n";
+}
+
+// Display only in-progress orders
+void viewInProgressOrders() {
+    if (inProgressOrders.isEmpty()) {
+        cout << "No orders currently in progress.\n";
+        return;
+    }
+    cout << "\n========== IN PROGRESS ORDERS (" << inProgressOrders.getCount() << ") ==========\n";
+    inProgressOrders.display();
+    cout << "====================================================\n";
+}
+
+// Display only completed / failed orders
+void viewCompletedOrders() {
+    if (completedOrders.isEmpty()) {
+        cout << "No completed or failed orders yet.\n";
+        return;
+    }
+    cout << "\n========== COMPLETED / FAILED ORDERS (" << completedOrders.getCount() << ") ==========\n";
+    completedOrders.display();
+    cout << "====================================================\n";
 }

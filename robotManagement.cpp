@@ -82,13 +82,13 @@ void displayRobotStatus() {
         return;
     }
 
-    cout << "\n===== ROBOT STATUS =====\n";
+    cout << "\n=================== ROBOT STATUS ===================\n";
     Robot* temp = robotHead;
     do {
         cout << "  Robot [" << temp->getID() << "] - " << temp->getStatus() << "\n";
         temp = temp->nextRobot;
     } while (temp != robotHead);
-    cout << "========================\n";
+    cout << "====================================================\n";
 }
 
 // Robot Maintenance sub-menu
@@ -102,11 +102,11 @@ void robotMaintenance() {
     int subChoice;
 
     do {
-        cout << "\n===== ROBOT MAINTENANCE =====\n";
+        cout << "\n================ ROBOT MAINTENANCE =================\n";
         cout << "1. Put Robot to Maintenance\n";
         cout << "2. Back from Maintenance\n";
         cout << "3. Back to Main Menu\n";
-        cout << "=============================\n";
+        cout << "====================================================\n";
         cout << "Enter choice: ";
         getline(cin, input);
 
