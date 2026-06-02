@@ -21,7 +21,7 @@
 //   Base -> zone entry points              : 2 / 3
 
 #include <string>
-using namespace std;
+// std:: prefix used throughout - 'using namespace std' omitted from headers
 
 const int GRAPH_NODES = 19;
 const int BASE_NODE   = 0;
@@ -33,7 +33,7 @@ int locationToNode(char zone, int aisle, int shelf);
 // Return a human-readable label for a node ID
 // e.g.  nodeLabel(7)  -> "Zone B | Aisle 1 | Shelf 1"
 //       nodeLabel(0)  -> "Base"
-string nodeLabel(int nodeID);
+std::string nodeLabel(int nodeID);
 
 // Dijkstra shortest path from BASE_NODE to targetNode.
 //   path[] is filled with node IDs in order: Base, ..., target.
@@ -42,5 +42,6 @@ int dijkstra(int targetNode, int path[GRAPH_NODES]);
 
 // Print the full adjacency list with edge costs (for the warehouse menu)
 void printWarehouseGraph();
+
 
 #endif

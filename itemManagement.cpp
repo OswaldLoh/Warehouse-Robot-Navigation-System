@@ -147,9 +147,14 @@ static void relocateItem(Item* item, char oldZone, int oldAisle, int oldShelf) {
     robot->pushStep("Navigate to " + newShelfStr, "Return from " + newShelfStr);
     cout << "  Placing item at new location...\n";
 
+    // Save the relocation trip to history BEFORE goBack() clears the stack
+    // Using orderID = 0 to indicate this was a relocation, not a customer order
+    robot->saveNavRecord(0, item->name + " (relocation)");
+
     // Return to base via full reverse path
     cout << "\n[Phase 3 - Returning to Base]\n";
     robot->goBack();
+
 
     cout << "\nRelocation of [" << item->ID << "] \"" << item->name << "\" complete!\n";
     cout << "====================================================\n";
