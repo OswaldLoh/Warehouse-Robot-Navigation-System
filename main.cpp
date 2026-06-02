@@ -1,8 +1,16 @@
+// Shared File
+// System entry point. Initialises all modules, shows the main menu,
+// and routes user input to each task's sub-menu.
+//   Task 1 -> Order Management     Task 4 -> Item Management
+//   Task 2 -> Robot Assignment     Task 5 -> Warehouse Layout
+//   Task 3 -> Navigation & Path Tracking
+
 #include <iostream>
 #include <string>
 #include "headerFiles/robot.h"
 #include "headerFiles/order.h"
 #include "headerFiles/warehouse.h"
+#include "headerFiles/navigation.h"    // Task 3: Robot Navigation & Path Tracking
 
 using namespace std;
 
@@ -71,7 +79,7 @@ void robotAssignmentMenu() {
     } while (choice != 4);
 }
 
-// Module 3: Robot Navigation & Path Tracking
+// Module 3: Robot Navigation & Path Tracking (Task 3)
 void navigationMenu() {
     string input;
     int choice;
@@ -79,13 +87,15 @@ void navigationMenu() {
     do {
         cout << "\n===== ROBOT NAVIGATION & PATH TRACKING MODULE =====\n";
         cout << "1. Complete Next In-Progress Order\n";
-        cout << "2. Back to Main Menu\n";
+        cout << "2. View Robot Navigation Log\n";
+        cout << "3. View All Navigation History\n";
+        cout << "4. Back to Main Menu\n";
         cout << "====================================================\n";
         cout << "Enter choice: ";
         getline(cin, input);
 
-        if (input.length() != 1 || input[0] < '1' || input[0] > '2') {
-            cout << "\nInvalid input. Please enter 1 or 2.\n";
+        if (input.length() != 1 || input[0] < '1' || input[0] > '4') {
+            cout << "\nInvalid input. Please enter 1, 2, 3, or 4.\n";
             continue;
         }
 
@@ -94,10 +104,13 @@ void navigationMenu() {
 
         switch (choice) {
             case 1: completeOrder(); break;
-            case 2: break;
+            case 2: viewRobotNavigationLog(); break;
+            case 3: viewAllNavigationHistory(); break;
+            case 4: break;
         }
-    } while (choice != 2);
+    } while (choice != 4);
 }
+
 
 // Module 4: Item Search & Management
 void itemSearchMenu() {

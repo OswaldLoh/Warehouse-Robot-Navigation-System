@@ -1,3 +1,8 @@
+// Task 5 - Warehouse Layout Module
+//
+// Models the warehouse as a 3-level hierarchical linked structure:
+//   Zone -> Aisle -> Shelf -> Items (linked list)
+// Supports item storage, display, lookup, and deletion.
 #include <iostream>
 #include <string>
 #include "headerFiles/warehouse.h"
@@ -158,7 +163,8 @@ Zone* getWarehouseHead() {
 // ==================== Item Search (BST) ====================
 
 Item* findItemByID(Zone* head, int itemID) {
-    // Use BST for O(log n) lookup instead of O(n) linear search
+    // 'head' parameter kept for API consistency — BST gives O(log n) lookup
+    (void)head;     // Suppress unused-parameter warning
     TreeNode* result = searchBST(bstRoot, itemID);
     if (result != nullptr) {
         return result->item;

@@ -1,3 +1,8 @@
+// Task 4 - Item Search & Management Module
+//
+// Provides CRUD operations on warehouse items.
+// Uses the BST (tree.cpp) for fast search and the shelf linked list
+// (storage.cpp) for item storage.
 #include <iostream>
 #include <string>
 #include "headerFiles/warehouse.h"

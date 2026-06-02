@@ -1,18 +1,23 @@
 #ifndef ORDER_H
 #define ORDER_H
+
+// Task 1 - Order Management Module
+// Declares Order struct, OrderQueue (FIFO), and CompletedStack (LIFO).
+
+// Note: std:: prefix used throughout - 'using namespace std' is omitted
+// from header files to avoid polluting the global namespace.
+
 #include <iostream>
 #include <string>
 
-using namespace std;
-
 struct Order {
     int orderID;
-    string itemName;
+    std::string itemName;
     int assignedRobotID;
-    string status;
+    std::string status;
     Order* next;
 
-    Order(int id, string item) {
+    Order(int id, std::string item) {
         orderID = id;
         itemName = item;
         assignedRobotID = -1;
@@ -60,7 +65,7 @@ extern int orderCounter;
 // Order management functions (defined in orderManagement.cpp)
 void addOrder();
 void assignOrders();
-void completeOrder();
 void viewOrderStatus();
+
 
 #endif

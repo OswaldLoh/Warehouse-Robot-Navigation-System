@@ -1,3 +1,7 @@
+// Task 5 - Warehouse Layout Module
+//
+// Loads warehouse item data from a CSV file (database/items.csv)
+// at system startup so the warehouse is pre-populated.
 #include <iostream>
 #include <fstream>
 #include <sstream>

@@ -1,3 +1,8 @@
+// Task 5 - Warehouse Layout Module
+//
+// Implements a Binary Search Tree (BST) for fast item lookup by ID.
+// The BST runs alongside the shelf linked lists and gives O(log n)
+// search instead of O(n) linear scan.
 #include <iostream>
 #include <string>
 #include "headerFiles/warehouse.h"

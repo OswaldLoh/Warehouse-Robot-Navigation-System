@@ -1,3 +1,8 @@
+// Task 1 - Order Management Module
+//
+// Manages customer orders using two custom data structures:
+//   - OrderQueue  (FIFO linked list) - holds pending and in-progress orders
+//   - CompletedStack (LIFO linked list) - holds completed orders, newest on top
 #include <iostream>
 #include <string>
 #include "headerFiles/order.h"
@@ -151,52 +156,6 @@ void assignOrders() {
         cout << "Could not assign any orders (all robots busy).\n";
 }
 
-// Complete the next in-progress order (FIFO)
-void completeOrder() {
-    if (inProgressOrders.isEmpty()) {
-        cout << "No orders currently in progress.\n";
-        return;
-    }
-
-    Order* order = inProgressOrders.dequeue();
-
-    // Find the assigned robot in the circular list
-    Robot* temp = robotHead;
-    Robot* assignedRobot = nullptr;
-    do {
-        if (temp->getID() == order->assignedRobotID) {
-            assignedRobot = temp;
-            break;
-        }
-        temp = temp->nextRobot;
-    } while (temp != robotHead);
-
-    if (assignedRobot != nullptr) {
-        // Simulate robot navigation (push steps onto the stack)
-        cout << "\n--- Navigating Robot [" << assignedRobot->getID()
-             << "] for Order #" << order->orderID << " ---\n";
-
-        assignedRobot->pushStep("Move Forward", "Move Backward");
-        cout << "Step: Move Forward\n";
-        assignedRobot->pushStep("Turn Left", "Turn Right");
-        cout << "Step: Turn Left\n";
-        assignedRobot->pushStep("Move Forward", "Move Backward");
-        cout << "Step: Move Forward\n";
-
-        cout << "Robot [" << assignedRobot->getID()
-             << "] reached item: \"" << order->itemName << "\"\n";
-        cout << "Picking up item...\n\n";
-
-        // Robot returns using reverse path (stack pop)
-        assignedRobot->goBack();
-    }
-
-    // Move order to completed stack
-    order->status = "Completed";
-    completedOrders.push(order);
-
-    cout << "Order #" << order->orderID << " has been completed!\n";
-}
 
 // Display all order statuses across the 3 data structures
 void viewOrderStatus() {

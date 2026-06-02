@@ -1,3 +1,11 @@
+// Task 2 - Robot Assignment Module
+//
+// Manages robots in the warehouse using a Circular Linked List.
+// Robots are arranged in a ring so the scheduler can assign tasks
+// in round-robin order without ever reaching a dead end.
+//
+// Note: Navigation methods (pushStep, popStep, goBack, etc.) are
+// implemented in robotNavigation.cpp (Task 3).
 #include <iostream>
 #include <string>
 #include "headerFiles/robot.h"
@@ -6,45 +14,24 @@ using namespace std;
 
 // Constructor
 Robot::Robot(int robotID) {
-    this->ID = robotID;
-    this->status = "Available";
-    this->stackTop = nullptr;
-    this->nextRobot = nullptr;
+    this->ID              = robotID;
+    this->status          = "Available";
+    this->stackTop        = nullptr;
+    this->navHistoryHead  = nullptr;    // Task 3: navigation history starts empty
+    this->navHistoryCount = 0;          // Task 3: no trips recorded yet
+    this->nextRobot       = nullptr;
 };
 
 // Getters
-int Robot::getID() { return ID; }
-string Robot::getStatus() { return status; }
-Step* Robot::getStack() { return stackTop; }
+int    Robot::getID()              { return ID; }
+string Robot::getStatus()          { return status; }
+Step*  Robot::getStack()           { return stackTop; }
+// getNavHistoryCount() is implemented in robotNavigation.cpp (Task 3)
 
 // Setters
 void Robot:: setStatus(string newStatus) { status = newStatus; }
 void Robot:: setStack(Step* newStack) { stackTop = newStack; }
 
-// Methods
-void Robot::pushStep(string fAction, string bAction) {  // Add a traversal step onto the stack
-    Step* newStep = new Step(fAction, bAction);
-    newStep->below = stackTop;       // When adding a new step, the below of new step is the current top
-    stackTop = newStep;             // So now the top of stack is the new step
-}
-
-void Robot::popStep() {             // Delete the top traversal step on the stack
-    if (stackTop != nullptr) {
-        Step* temp = stackTop;
-        stackTop = stackTop->below;
-        delete temp;
-    }
-}
-
-void Robot::goBack() {              // Robot execute return path by retracing the stack
-    cout << "Robot [" << ID << "] is returning to base...\n";
-    while (stackTop != nullptr) {
-        std::cout << "Executing: " << stackTop->backAction << "\n";
-        popStep();
-    }
-    status = "Available";
-    cout << "Robot [" << ID << "] is now Available.\n";
-}
 
 // ==================== Circular Robot Queue ====================
 Robot* robotHead = nullptr;         // First robot in the circular list

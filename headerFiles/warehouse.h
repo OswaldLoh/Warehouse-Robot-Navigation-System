@@ -1,16 +1,21 @@
 #ifndef WAREHOUSE_H
 #define WAREHOUSE_H
 
+// Shared header used by Tasks 3, 4, and 5.
+// Declares all warehouse structs (Item, Shelf, Aisle, Zone, TreeNode)
+// and function prototypes for storage, BST, file handling, and item management.
+
+// Note: std:: prefix used throughout - 'using namespace std' is omitted
+// from header files to avoid polluting the global namespace.
+
 #include <iostream>
 #include <string>
-
-using namespace std;
 
 // ==================== Warehouse Structs ====================
 
 struct Item {
     int ID;
-    string name;
+    std::string name;
 
     char zoneID;
     int aisleID;
@@ -20,7 +25,7 @@ struct Item {
     Item* right;
     Item* next;         // For shelf linked list
 
-    Item(int id, string itemName, char zID, int aID, int sID) {
+    Item(int id, std::string itemName, char zID, int aID, int sID) {
         ID = id;
         name = itemName;
         zoneID = zID;
@@ -98,7 +103,7 @@ void displayItemsSorted();
 
 // Parse items from a CSV file
 // Returns a dynamically allocated array of Item pointers, sets 'count' to the number of items loaded
-Item** loadItemsFromCSV(const string& filepath, int& count);
+Item** loadItemsFromCSV(const std::string& filepath, int& count);
 
 // ==================== Storage ====================
 
