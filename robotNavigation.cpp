@@ -12,6 +12,7 @@
 #include "headerFiles/robot.h"
 #include "headerFiles/order.h"
 #include "headerFiles/warehouse.h"
+#include "headerFiles/graph.h"       // Warehouse graph + Dijkstra
 #include "headerFiles/navigation.h"
 
 using namespace std;
@@ -210,14 +211,9 @@ static Item* findItemByName(Zone* head, const string& name) {
     return nullptr;
 }
 
-// Build and push navigation steps based on the item's real location.
-// Returns true if the item was found and steps were pushed.
-// Returns false if the item does not exist in the database - no steps
-// are pushed and the robot stays put.
-//
-// Obstacle handling: if the item is in Aisle 2, an obstacle is
-// simulated. The robot backtracks (pops the last step) then takes
-// an alternate route through Aisle 1 to reach Aisle 2.
+// Build and push navigation steps using Dijkstra's shortest path.
+// Returns true if the item was found and a path was computed.
+// Returns false if the item is not in the database — robot stays put.
 static bool navigateRobot(Robot* robot, const string& itemName) {
     Item* item = findItemByName(getWarehouseHead(), itemName);
 
@@ -227,52 +223,30 @@ static bool navigateRobot(Robot* robot, const string& itemName) {
         return false;
     }
 
-    string zoneName  = "Zone ";  zoneName += item->zoneID;
-    string aisleName = "Aisle " + to_string(item->aisleID);
-    string shelfName = "Shelf " + to_string(item->shelfID);
+    // Convert item's physical location to its graph node ID
+    int targetNode = locationToNode(item->zoneID, item->aisleID, item->shelfID);
 
-    // Step 1 - go to the correct zone
-    cout << "  Step 1: Navigate to " << zoneName << "\n";
-    robot->pushStep("Navigate to " + zoneName,
-                    "Return from "  + zoneName);
+    // Run Dijkstra from Base (node 0) to the target shelf node
+    int path[GRAPH_NODES];
+    int pathLen = dijkstra(targetNode, path);
 
-    if (item->aisleID == 2) {
-        // Obstacle in Aisle 2 - backtrack and reroute via Aisle 1
-        cout << "  Step 2: Attempting to enter " << aisleName << "...\n";
-        cout << "\n[!] OBSTACLE detected in " << aisleName << "! Backtracking...\n\n";
-
-        if (robot->getStack() != nullptr) {
-            cout << "  Backtrack: " << robot->getStack()->backAction << "\n";
-            robot->popStep();
-        }
-
-        cout << "  Alternate: Re-entering " << zoneName << " via alternate corridor\n";
-        robot->pushStep("Navigate to " + zoneName + " (alt corridor)",
-                        "Return from " + zoneName + " (alt corridor)");
-
-        cout << "  Step 2 (alt): Navigate to Aisle 1 (detour)\n";
-        robot->pushStep("Navigate to Aisle 1 (detour)",
-                        "Return from Aisle 1 (detour)");
-
-        cout << "  Step 3: Cross to " << aisleName << " via Aisle 1\n";
-        robot->pushStep("Cross to " + aisleName + " via Aisle 1",
-                        "Return via Aisle 1 to " + zoneName);
-    } else {
-        // Direct path - no obstacle
-        cout << "  Step 2: Navigate to " << aisleName << "\n";
-        robot->pushStep("Navigate to " + aisleName,
-                        "Return from "  + aisleName);
+    if (pathLen == 0) {
+        cout << "[!] Dijkstra: no path found to " << nodeLabel(targetNode) << ".\n";
+        return false;
     }
 
-    // Count actual steps pushed so the step number is always accurate
-    int nextStep = 0;
-    Step* temp = robot->getStack();
-    while (temp != nullptr) { nextStep++; temp = temp->below; }
-    nextStep++;  // next step number = current count + 1
+    cout << " Target : " << nodeLabel(targetNode) << "\n";
+    cout << " Path   : " << pathLen - 1 << " hop(s) | computed by Dijkstra\n";
 
-    cout << "  Step " << nextStep << ": Navigate to " << shelfName << "\n";
-    robot->pushStep("Navigate to " + shelfName,
-                    "Return from "  + shelfName);
+    cout << "\n";
+
+    // Push one step per hop in the optimal path
+    for (int i = 1; i < pathLen; i++) {
+        string fwd = "Move to "      + nodeLabel(path[i]);
+        string bwd = "Return from " + nodeLabel(path[i]);
+        cout << "  Step " << i << ": " << fwd << "\n";
+        robot->pushStep(fwd, bwd);
+    }
 
     return true;
 }
@@ -322,7 +296,7 @@ void completeOrder() {
         order->status = "Failed";
         completedOrders.push(order);
         cout << "\nOrder #" << order->orderID
-             << " marked as Failed (item not in database). Robot ["
+             << " marked as Failed (item not in database). \nRobot ["
              << assignedRobot->getID() << "] is now Available.\n";
         cout << "====================================================\n";
         return;

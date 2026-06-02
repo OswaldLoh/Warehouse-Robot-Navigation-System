@@ -11,6 +11,7 @@
 #include "headerFiles/order.h"
 #include "headerFiles/warehouse.h"
 #include "headerFiles/navigation.h"    // Task 3: Robot Navigation & Path Tracking
+#include "headerFiles/graph.h"          // Task 5: Warehouse Graph & Dijkstra
 
 using namespace std;
 
@@ -164,14 +165,15 @@ void warehouseLayoutMenu() {
 
     do {
         cout << "\n======= WAREHOUSE LAYOUT & NAVIGATION MODULE =======\n";
-        cout << "1. View Warehouse Layout\n";
-        cout << "2. Back to Main Menu\n";
+        cout << "1. View Items by Location\n";
+        cout << "2. View Graph Connections & Edge Costs\n";
+        cout << "3. Back to Main Menu\n";
         cout << "====================================================\n";
         cout << ">>> ";
         getline(cin, input);
 
-        if (input.length() != 1 || input[0] < '1' || input[0] > '2') {
-            cout << "\nInvalid input. Please enter 1 or 2.\n";
+        if (input.length() != 1 || input[0] < '1' || input[0] > '3') {
+            cout << "\nInvalid input. Please enter 1, 2, or 3.\n";
             continue;
         }
 
@@ -180,9 +182,10 @@ void warehouseLayoutMenu() {
 
         switch (choice) {
             case 1: displayWarehouse(getWarehouseHead()); break;
-            case 2: break;
+            case 2: printWarehouseGraph(); break;
+            case 3: break;
         }
-    } while (choice != 2);
+    } while (choice != 3);
 }
 
 // ==================== Main ====================
