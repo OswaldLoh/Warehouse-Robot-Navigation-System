@@ -21,7 +21,7 @@
 //   Base -> zone entry points              : 2 / 3
 
 #include <string>
-// std:: prefix used throughout - 'using namespace std' omitted from headers
+// Note: std:: prefix used — 'using namespace std' omitted from headers
 
 const int GRAPH_NODES = 19;
 const int BASE_NODE   = 0;
@@ -42,6 +42,5 @@ int dijkstra(int targetNode, int path[GRAPH_NODES]);
 
 // Print the full adjacency list with edge costs (for the warehouse menu)
 void printWarehouseGraph();
-
 
 #endif

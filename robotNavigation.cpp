@@ -446,8 +446,13 @@ void manualNavigationSimulation() {
 
     cout << "\n" << stepCount << " step(s) recorded for Robot [" << robotID << "].\n";
 
-    // Display the complete forward and reverse path from the stack
-    target->printNavigationLog();
+    // Show the recorded forward path (non-destructive stack read)
+    // Use printForwardPath() only — goBack() will show the reverse during execution
+    target->printForwardPath();
+
+    // Save this simulation trip to NavRecord history BEFORE goBack() clears the stack.
+    // orderID = 0 and itemName = "Manual Simulation" since there is no real order.
+    target->saveNavRecord(0, "Manual Simulation");
 
     // Let the user choose whether to execute the return journey
     cout << "\nExecute reverse journey now? (Y/N): ";
