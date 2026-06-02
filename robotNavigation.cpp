@@ -354,7 +354,7 @@ void completeOrder() {
     assignedRobot->saveNavRecord(order->orderID, order->itemName);
 
     // Print full round-trip log
-    assignedRobot->printNavigationLog();
+    assignedRobot->printForwardPath();
 
     // Reverse navigation - robot returns to base
     cout << "\n[Reverse Navigation]\n";
