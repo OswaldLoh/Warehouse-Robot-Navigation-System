@@ -50,7 +50,7 @@ Order* OrderQueue::dequeue() {                  // Remove and return order from 
 void OrderQueue::display() {
     Order* temp = front;
     while (temp != nullptr) {
-        cout << "  Order #" << temp->orderID
+        cout << "Order #" << temp->orderID
              << " | Item: " << temp->itemName;
         if (temp->assignedRobotID != -1)
             cout << " | Robot [" << temp->assignedRobotID << "]";
@@ -182,7 +182,7 @@ void viewPendingOrders() {
         cout << "No pending orders.\n";
         return;
     }
-    cout << "\n========== PENDING ORDERS (" << pendingOrders.getCount() << "/5) ==========\n";
+    cout << "================== PENDING ORDERS ==================\n";
     pendingOrders.display();
     cout << "====================================================\n";
 }
@@ -193,7 +193,7 @@ void viewInProgressOrders() {
         cout << "No orders currently in progress.\n";
         return;
     }
-    cout << "\n========== IN PROGRESS ORDERS (" << inProgressOrders.getCount() << ") ==========\n";
+    cout << "================ IN PROGRESS ORDERS ================\n";
     inProgressOrders.display();
     cout << "====================================================\n";
 }
@@ -204,7 +204,7 @@ void viewCompletedOrders() {
         cout << "No completed or failed orders yet.\n";
         return;
     }
-    cout << "\n========== COMPLETED / FAILED ORDERS (" << completedOrders.getCount() << ") ==========\n";
+    cout << "=========== COMPLETED / FAILED ORDERS  ===========\n";
     completedOrders.display();
     cout << "====================================================\n";
 }

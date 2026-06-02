@@ -140,9 +140,7 @@ void Robot::displayNavHistory() {
         cout << "  Robot [" << ID << "] has no navigation history yet.\n";
         return;
     }
-
-    cout << "\n===== NAVIGATION HISTORY: Robot [" << ID << "] ("
-         << navHistoryCount << " trip(s)) =====\n";
+    cout << "\n========== NAVIGATION HISTORY - Robot [" << ID << "] ==========\n";
 
     NavRecord* curr = navHistoryHead;
     int tripNum = 1;
@@ -161,19 +159,19 @@ void Robot::displayNavHistory() {
 
         curr = curr->next;
     }
-    cout << "\n================================================\n";
+    cout << "\n====================================================\n";
 }
 
 // ===================== Return to Base =====================
 // Pops every step and executes its backAction.
 // LIFO ensures the last step taken is always undone first.
 void Robot::goBack() {
-    cout << "\nRobot [" << ID << "] returning to base...\n";
+    cout << "\n\nRobot [" << ID << "] returning to base...\n";
 
     if (stackTop == nullptr) {
         cout << "  (No path recorded - robot is already at base)\n";
         status = "Available";
-        cout << "Robot [" << ID << "] is now Available.\n";
+        cout << "\nRobot [" << ID << "] is now Available.\n";
         return;
     }
 
@@ -224,8 +222,8 @@ static bool navigateRobot(Robot* robot, const string& itemName) {
     Item* item = findItemByName(getWarehouseHead(), itemName);
 
     if (item == nullptr) {
-        cout << "  [!] Item \"" << itemName << "\" not found in the warehouse database.\n";
-        cout << "  Robot stays at base. No movement recorded.\n";
+        cout << "[!] Item \"" << itemName << "\" not found in the warehouse database.\n";
+        cout << "Robot stays at base. No movement recorded.\n";
         return false;
     }
 
@@ -241,7 +239,7 @@ static bool navigateRobot(Robot* robot, const string& itemName) {
     if (item->aisleID == 2) {
         // Obstacle in Aisle 2 - backtrack and reroute via Aisle 1
         cout << "  Step 2: Attempting to enter " << aisleName << "...\n";
-        cout << "  [!] OBSTACLE detected in " << aisleName << "! Backtracking...\n";
+        cout << "\n[!] OBSTACLE detected in " << aisleName << "! Backtracking...\n\n";
 
         if (robot->getStack() != nullptr) {
             cout << "  Backtrack: " << robot->getStack()->backAction << "\n";
@@ -330,21 +328,15 @@ void completeOrder() {
         return;
     }
 
-    cout << "\nRobot [" << assignedRobot->getID()
-         << "] reached item: \"" << order->itemName << "\"\n";
-    cout << "Picking up item...\n";
+    cout << "\n[!] Robot [" << assignedRobot->getID() << "] reached item: \"" << order->itemName << "\""
+            << " - Picking up item...\n";
 
     // Save trip to history BEFORE goBack() clears the stack
     assignedRobot->saveNavRecord(order->orderID, order->itemName);
 
-    // Show the forward path log (reverse path is shown by goBack() below).
-    // Using printForwardPath() avoids printing the reverse path twice —
-    // goBack() already shows each reverse step during live execution.
-    assignedRobot->printForwardPath();
-
     // Reverse navigation — goBack() pops each Step and prints its backAction,
     // showing the reverse path live as the robot returns to base.
-    cout << "\n[Reverse Navigation]\n";
+    cout << "\n[Reverse Navigation]";
     assignedRobot->goBack();
 
 
@@ -484,11 +476,10 @@ void manualNavigationSimulation() {
 // Shows the current stack contents for any robot (non-destructive).
 void viewRobotNavigationLog() {
     if (robotHead == nullptr) { cout << "No robots in the system.\n"; return; }
-
-    cout << "\n===== ROBOT STATUS =====\n";
+    cout << "=================== ROBOT STATUS ===================\n";
     Robot* temp = robotHead;
     do {
-        cout << "  Robot [" << temp->getID() << "] - "
+        cout << "Robot [" << temp->getID() << "] - "
              << temp->getStatus()
              << " | Trips completed: " << temp->getNavHistoryCount() << "\n";
         temp = temp->nextRobot;
@@ -525,8 +516,7 @@ void viewRobotNavigationLog() {
 // completed at least one order or simulation.
 void viewAllNavigationHistory() {
     if (robotHead == nullptr) { cout << "No robots in the system.\n"; return; }
-
-    cout << "\n===== COMPLETE NAVIGATION HISTORY (ALL ROBOTS) =====\n";
+    cout << "\n=========== COMPLETE NAVIGATION HISTORY  ===========\n";
 
     bool anyHistory = false;
     Robot* temp = robotHead;

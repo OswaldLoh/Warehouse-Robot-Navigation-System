@@ -85,7 +85,7 @@ void displayRobotStatus() {
     cout << "\n=================== ROBOT STATUS ===================\n";
     Robot* temp = robotHead;
     do {
-        cout << "  Robot [" << temp->getID() << "] - " << temp->getStatus() << "\n";
+        cout << "Robot [" << temp->getID() << "] - " << temp->getStatus() << "\n";
         temp = temp->nextRobot;
     } while (temp != robotHead);
     cout << "====================================================\n";
