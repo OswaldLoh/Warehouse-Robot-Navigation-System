@@ -128,19 +128,18 @@ void itemSearchMenu() {
 
     do {
         cout << "\n========= ITEM SEARCH & MANAGEMENT MODULE ==========\n";
-        cout << "1. View Warehouse Inventory\n";
+        cout << "1. Display All Items\n";
         cout << "2. Search Item by ID\n";
         cout << "3. Insert New Item\n";
         cout << "4. Update Item\n";
         cout << "5. Delete Item\n";
-        cout << "6. Display Items (Sorted by ID)\n";
-        cout << "7. Back to Main Menu\n";
+        cout << "6. Back to Main Menu\n";
         cout << "====================================================\n";
         cout << ">>> ";
         getline(cin, input);
 
-        if (input.length() != 1 || input[0] < '1' || input[0] > '7') {
-            cout << "\nInvalid input. Please enter a number between 1 and 7.\n";
+        if (input.length() != 1 || input[0] < '1' || input[0] > '6') {
+            cout << "\nInvalid input. Please enter a number between 1 and 6.\n";
             continue;
         }
 
@@ -148,15 +147,14 @@ void itemSearchMenu() {
         cout << "\n";
 
         switch (choice) {
-            case 1: displayWarehouse(getWarehouseHead()); break;
+            case 1: displayAllItems(); break;
             case 2: searchItem(); break;
             case 3: insertItem(); break;
             case 4: updateItem(); break;
             case 5: deleteItemMenu(); break;
-            case 6: displayItemsSorted(); break;
-            case 7: break;
+            case 6: break;
         }
-    } while (choice != 7);
+    } while (choice != 6);
 }
 
 // Module 5: Warehouse Layout & Navigation

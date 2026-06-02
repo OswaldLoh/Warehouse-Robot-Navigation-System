@@ -207,3 +207,37 @@ bool deleteItem(Zone* head, int itemID) {
     }
     return false;
 }
+
+// ==================== Remove Item from Shelf (no BST change) ====================
+// Unlinks an item from its current shelf linked list.
+// Does NOT delete the Item object and does NOT modify the BST.
+// Used before relocating an item to a new shelf.
+bool removeItemFromShelf(Zone* head, int itemID) {
+    Zone* z = head;
+    while (z != nullptr) {
+        Aisle* a = z->headAisle;
+        while (a != nullptr) {
+            Shelf* s = a->headShelf;
+            while (s != nullptr) {
+                Item* prev = nullptr;
+                Item* item = s->headItem;
+                while (item != nullptr) {
+                    if (item->ID == itemID) {
+                        if (prev == nullptr)
+                            s->headItem = item->next;
+                        else
+                            prev->next = item->next;
+                        item->next = nullptr;   // Detach cleanly
+                        return true;
+                    }
+                    prev = item;
+                    item = item->next;
+                }
+                s = s->nextShelf;
+            }
+            a = a->nextAisle;
+        }
+        z = z->nextZone;
+    }
+    return false;
+}

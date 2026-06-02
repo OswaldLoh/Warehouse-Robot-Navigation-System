@@ -125,10 +125,15 @@ Item* findItemByID(Zone* head, int itemID);
 // Delete an item by its ID, returns true if found and deleted
 bool deleteItem(Zone* head, int itemID);
 
+// Unlink an item from its shelf without deleting it or touching the BST
+// Used when relocating an item to a different shelf
+bool removeItemFromShelf(Zone* head, int itemID);
+
 // Item CRUD functions (defined in itemManagement.cpp)
 void searchItem();
 void insertItem();
 void updateItem();
 void deleteItemMenu();
+void displayAllItems();     // Bubble-sorted table: by ID or by Name
 
 #endif
