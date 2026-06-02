@@ -1,12 +1,14 @@
 // Task 3 - Robot Navigation & Path Tracking Module
+// File: robotNavigation.cpp
 //
 // Handles all robot movement in the warehouse.
 // Uses two data structures:
-//   1. Stack (linked list of Steps) - records forward path, used to reverse it
-//   2. NavRecord linked list - stores completed trip history for each robot
+//   1. Stack (linked list of Steps) - records forward path, reversed on return
+//   2. NavRecord linked list - stores completed trip history per robot
 
 #include <iostream>
 #include <string>
+#include <cctype>
 #include "headerFiles/robot.h"
 #include "headerFiles/order.h"
 #include "headerFiles/warehouse.h"
@@ -15,11 +17,10 @@
 using namespace std;
 
 // ===================== Stack Operations =====================
-// The navigation stack stores each movement as a Step node.
-// LIFO order means the last step pushed is the first reversed
-// - exactly what we need for the robot's return journey.
+// The navigation stack uses LIFO order so the last step pushed
+// is the first step reversed - exactly right for a return journey.
 
-// Add a step to the top of the stack (O(1))
+// Push one movement step onto the top of the stack (O(1))
 void Robot::pushStep(string fAction, string bAction) {
     Step* newStep  = new Step(fAction, bAction);
     newStep->below = stackTop;
@@ -27,7 +28,7 @@ void Robot::pushStep(string fAction, string bAction) {
 }
 
 // Remove the top step and free its memory (O(1))
-// Called by goBack() and during obstacle backtracking
+// Used by goBack() and by obstacle backtracking
 void Robot::popStep() {
     if (stackTop != nullptr) {
         Step* temp = stackTop;
@@ -36,17 +37,16 @@ void Robot::popStep() {
     }
 }
 
-// Return how many navigation trips this robot has completed
+// Return the number of trips this robot has completed
 int Robot::getNavHistoryCount() {
     return navHistoryCount;
 }
 
 // ===================== Path Display =====================
-// Both functions read the stack without modifying it.
-// Steps are collected into a local array first so we can
-// print them in the correct order (stack is stored LIFO).
+// Both functions collect stack pointers into a local array first
+// so we can print steps in the right order (stack is LIFO).
 
-// Show the forward path from first step to last
+// Show the forward path in the order the steps were taken
 void Robot::printForwardPath() {
     const int MAX_STEPS = 50;
     Step* steps[MAX_STEPS];
@@ -59,17 +59,15 @@ void Robot::printForwardPath() {
     }
 
     cout << "\n  -- Forward Path (Start --> Destination) --\n";
-    if (count == 0) {
-        cout << "  (No steps recorded)\n";
-        return;
-    }
-    // steps[count-1] is the bottom (first step taken)
+    if (count == 0) { cout << "  (No steps recorded)\n"; return; }
+
+    // steps[count-1] = bottom = first step taken
     for (int i = count - 1; i >= 0; i--) {
         cout << "  Step " << (count - i) << ": " << steps[i]->forwardAction << "\n";
     }
 }
 
-// Show the reverse path (what goBack() will execute)
+// Show the reverse path in the order goBack() will execute it
 void Robot::printReversePath() {
     const int MAX_STEPS = 50;
     Step* steps[MAX_STEPS];
@@ -82,17 +80,15 @@ void Robot::printReversePath() {
     }
 
     cout << "\n  -- Reverse Path (Destination --> Base) --\n";
-    if (count == 0) {
-        cout << "  (No steps to reverse)\n";
-        return;
-    }
-    // steps[0] is the top (last step taken), so it's reversed first
+    if (count == 0) { cout << "  (No steps to reverse)\n"; return; }
+
+    // steps[0] = top = last step taken, so it is reversed first (LIFO)
     for (int i = 0; i < count; i++) {
         cout << "  Step " << (i + 1) << ": " << steps[i]->backAction << "\n";
     }
 }
 
-// Print the full round-trip log for this robot
+// Print both paths together as a complete round-trip log
 void Robot::printNavigationLog() {
     cout << "\n===== NAVIGATION LOG: Robot [" << ID << "] =====\n";
     printForwardPath();
@@ -101,14 +97,13 @@ void Robot::printNavigationLog() {
 }
 
 // ===================== Navigation History =====================
-// saveNavRecord() snapshots the current stack into a NavRecord node
-// and appends it to this robot's history linked list.
-// Must be called BEFORE goBack() because goBack() clears the stack.
+// saveNavRecord() must be called BEFORE goBack() because goBack()
+// pops and frees every Step node, leaving the stack empty.
 
 void Robot::saveNavRecord(int orderID, const string& itemName) {
     NavRecord* record = new NavRecord(orderID, itemName);
 
-    // Collect stack nodes into an array (index 0 = top = last step taken)
+    // Collect stack nodes (index 0 = top = last step taken)
     const int MAX = 50;
     Step* steps[MAX];
     int count = 0;
@@ -120,30 +115,26 @@ void Robot::saveNavRecord(int orderID, const string& itemName) {
 
     record->stepCount = count;
 
-    // Store forward steps in chronological order (bottom of stack first)
-    for (int j = 0; j < count; j++) {
+    // Forward: bottom of stack first (chronological order)
+    for (int j = 0; j < count; j++)
         record->forwardSteps[j] = steps[count - 1 - j]->forwardAction;
-    }
 
-    // Store reverse steps in execution order (top of stack first)
-    for (int j = 0; j < count; j++) {
+    // Reverse: top of stack first (goBack() execution order)
+    for (int j = 0; j < count; j++)
         record->reverseSteps[j] = steps[j]->backAction;
-    }
 
-    // Append to the end of the history list to keep trips in order
+    // Append to tail so trips stay in chronological order
     if (navHistoryHead == nullptr) {
         navHistoryHead = record;
     } else {
         NavRecord* tail = navHistoryHead;
-        while (tail->next != nullptr) {
-            tail = tail->next;
-        }
+        while (tail->next != nullptr) tail = tail->next;
         tail->next = record;
     }
     navHistoryCount++;
 }
 
-// Display all past trips stored in this robot's NavRecord list
+// Display all trips in this robot's history list
 void Robot::displayNavHistory() {
     if (navHistoryHead == nullptr) {
         cout << "  Robot [" << ID << "] has no navigation history yet.\n";
@@ -161,14 +152,12 @@ void Robot::displayNavHistory() {
              << " | Item: \"" << curr->itemName << "\"\n";
 
         cout << "    Forward Path (" << curr->stepCount << " steps):\n";
-        for (int i = 0; i < curr->stepCount; i++) {
+        for (int i = 0; i < curr->stepCount; i++)
             cout << "      Step " << (i + 1) << ": " << curr->forwardSteps[i] << "\n";
-        }
 
         cout << "    Reverse Path:\n";
-        for (int i = 0; i < curr->stepCount; i++) {
+        for (int i = 0; i < curr->stepCount; i++)
             cout << "      Step " << (i + 1) << ": " << curr->reverseSteps[i] << "\n";
-        }
 
         curr = curr->next;
     }
@@ -176,9 +165,8 @@ void Robot::displayNavHistory() {
 }
 
 // ===================== Return to Base =====================
-// Pops every step off the stack and executes its backAction.
-// Because the stack is LIFO, the last step taken is always
-// undone first - the correct order for returning home.
+// Pops every step and executes its backAction.
+// LIFO ensures the last step taken is always undone first.
 void Robot::goBack() {
     cout << "\nRobot [" << ID << "] returning to base...\n";
 
@@ -199,11 +187,10 @@ void Robot::goBack() {
     cout << "Robot [" << ID << "] has returned to base and is now Available.\n";
 }
 
-// ===================== Path Generation =====================
+// ===================== Path Generation (Order-based) =====================
 
-// Search warehouse by item name (case-sensitive).
-// Orders store the item name, not the ID, so we need this
-// to look up the real Zone/Aisle/Shelf location.
+// Find an item in the warehouse by name (case-sensitive).
+// Orders store the item name, so we need this to get the real location.
 static Item* findItemByName(Zone* head, const string& name) {
     Zone* z = head;
     while (z != nullptr) {
@@ -225,14 +212,14 @@ static Item* findItemByName(Zone* head, const string& name) {
     return nullptr;
 }
 
-// Build and push navigation steps based on the item's real location.
+// Generate and push steps based on the item's real warehouse location.
 //
-// Obstacle handling: if the item is in Aisle 2, an obstacle is
-// simulated. The robot backtracks (pops the last step) then takes
-// an alternate route through Aisle 1 to reach Aisle 2.
+// Obstacle: if the item is in Aisle 2, an obstacle is detected.
+//   The robot backtracks (pops the last step) then reroutes
+//   through Aisle 1 - demonstrating backtracking via popStep().
 //
 // Fallback: if the item is not in the database, a safe 3-step
-// default path is used so the program never crashes.
+//   default path (Forward, Left, Forward) is used.
 static void navigateRobot(Robot* robot, const string& itemName) {
     Item* item = findItemByName(getWarehouseHead(), itemName);
 
@@ -241,13 +228,12 @@ static void navigateRobot(Robot* robot, const string& itemName) {
         string aisleName = "Aisle " + to_string(item->aisleID);
         string shelfName = "Shelf " + to_string(item->shelfID);
 
-        // Step 1 - go to the correct zone
+        // Step 1 - navigate to the correct zone
         cout << "  Step 1: Navigate to " << zoneName << "\n";
-        robot->pushStep("Navigate to " + zoneName,
-                        "Return from "  + zoneName);
+        robot->pushStep("Navigate to " + zoneName, "Return from " + zoneName);
 
         if (item->aisleID == 2) {
-            // Obstacle in Aisle 2 - backtrack and reroute via Aisle 1
+            // Aisle 2 is blocked - backtrack and take alternate route via Aisle 1
             cout << "  Step 2: Attempting to enter " << aisleName << "...\n";
             cout << "  [!] OBSTACLE detected in " << aisleName << "! Backtracking...\n";
 
@@ -258,55 +244,41 @@ static void navigateRobot(Robot* robot, const string& itemName) {
 
             cout << "  Alternate: Re-entering " << zoneName << " via alternate corridor\n";
             robot->pushStep("Navigate to " + zoneName + " (alt corridor)",
-                            "Return from " + zoneName + " (alt corridor)");
+                            "Return from "  + zoneName + " (alt corridor)");
 
             cout << "  Step 2 (alt): Navigate to Aisle 1 (detour)\n";
-            robot->pushStep("Navigate to Aisle 1 (detour)",
-                            "Return from Aisle 1 (detour)");
+            robot->pushStep("Navigate to Aisle 1 (detour)", "Return from Aisle 1 (detour)");
 
             cout << "  Step 3: Cross to " << aisleName << " via Aisle 1\n";
             robot->pushStep("Cross to " + aisleName + " via Aisle 1",
                             "Return via Aisle 1 to " + zoneName);
         } else {
-            // Direct path - no obstacle
             cout << "  Step 2: Navigate to " << aisleName << "\n";
-            robot->pushStep("Navigate to " + aisleName,
-                            "Return from "  + aisleName);
+            robot->pushStep("Navigate to " + aisleName, "Return from " + aisleName);
         }
 
-        // Count actual steps pushed so the step number is always accurate
+        // Count actual steps on the stack so the step number is always correct
         int nextStep = 0;
         Step* temp = robot->getStack();
         while (temp != nullptr) { nextStep++; temp = temp->below; }
-        nextStep++;  // next step number = current count + 1
+        nextStep++;
 
         cout << "  Step " << nextStep << ": Navigate to " << shelfName << "\n";
-        robot->pushStep("Navigate to " + shelfName,
-                        "Return from "  + shelfName);
+        robot->pushStep("Navigate to " + shelfName, "Return from " + shelfName);
 
     } else {
-        // Item not found in warehouse - use a safe default path
-        cout << "  [!] Item \"" << itemName << "\" not found in warehouse database.\n";
-        cout << "  Using default navigation route.\n";
-
-        cout << "  Step 1: Move Forward\n";
-        robot->pushStep("Move Forward", "Move Backward");
-        cout << "  Step 2: Turn Left\n";
-        robot->pushStep("Turn Left", "Turn Right");
-        cout << "  Step 3: Move Forward\n";
-        robot->pushStep("Move Forward", "Move Backward");
+        // Item not in database - use a simple default 3-step path
+        cout << "  [!] Item \"" << itemName << "\" not found in warehouse. Using default path.\n";
+        cout << "  Step 1: Move Forward\n";  robot->pushStep("Move Forward", "Move Backward");
+        cout << "  Step 2: Turn Left\n";     robot->pushStep("Turn Left",    "Turn Right");
+        cout << "  Step 3: Move Forward\n";  robot->pushStep("Move Forward", "Move Backward");
     }
 }
 
 // ===================== Complete Order =====================
-// Main Task 3 function. Runs the full navigation flow:
-//   1. Forward path  - navigate to item location
-//   2. Obstacle check - backtrack and reroute if needed
-//   3. Pick up item
-//   4. Save trip to history (before stack is cleared)
-//   5. Print navigation log
-//   6. Reverse path  - robot returns to base step by step
-//   7. Mark order as Completed
+// Full navigation cycle for one in-progress order:
+//   Forward path -> obstacle handling -> pick up item ->
+//   save history -> print nav log -> reverse path -> mark completed
 void completeOrder() {
     if (inProgressOrders.isEmpty()) {
         cout << "No orders currently in progress.\n";
@@ -315,19 +287,15 @@ void completeOrder() {
 
     Order* order = inProgressOrders.dequeue();
 
-    // Find the assigned robot in the circular linked list
+    // Locate the robot assigned to this order
     Robot* temp          = robotHead;
     Robot* assignedRobot = nullptr;
     do {
-        if (temp->getID() == order->assignedRobotID) {
-            assignedRobot = temp;
-            break;
-        }
+        if (temp->getID() == order->assignedRobotID) { assignedRobot = temp; break; }
         temp = temp->nextRobot;
     } while (temp != robotHead);
 
     if (assignedRobot == nullptr) {
-        // Robot not found (safety check) - complete order without navigation
         cout << "[!] Warning: Robot [" << order->assignedRobotID
              << "] not found. Order completed without navigation.\n";
         order->status = "Completed";
@@ -350,15 +318,20 @@ void completeOrder() {
          << "] reached item: \"" << order->itemName << "\"\n";
     cout << "Picking up item...\n";
 
-    // Save trip record before goBack() clears the stack
+    // Save trip to history BEFORE goBack() clears the stack
     assignedRobot->saveNavRecord(order->orderID, order->itemName);
 
-    // Print full round-trip log
+    // Show the forward path log (reverse path is shown by goBack() below).
+    // Using printForwardPath() avoids printing the reverse path twice —
+    // goBack() already shows each reverse step during live execution.
     assignedRobot->printForwardPath();
 
-    // Reverse navigation - robot returns to base
+    // Reverse navigation — goBack() pops each Step and prints its backAction,
+    // showing the reverse path live as the robot returns to base.
     cout << "\n[Reverse Navigation]\n";
     assignedRobot->goBack();
+
+
 
     order->status = "Completed";
     completedOrders.push(order);
@@ -367,14 +340,134 @@ void completeOrder() {
     cout << "===================================================\n";
 }
 
-// ===================== View Navigation Log =====================
-// Lets the user pick a robot and see its current stack contents
-// (the path recorded so far). Non-destructive - stack unchanged.
-void viewRobotNavigationLog() {
+// ===================== Manual Navigation Simulation =====================
+// Lets the user manually drive a robot step by step using keyboard commands.
+// Demonstrates the stack data structure directly - each command pushes
+// a Step node (with its reverse), and 'O' triggers obstacle backtracking
+// by calling popStep(). At the end the full forward and reverse paths
+// are shown, satisfying the "simulate robot movement" requirement.
+void manualNavigationSimulation() {
     if (robotHead == nullptr) {
         cout << "No robots in the system.\n";
         return;
     }
+
+    cout << "\n===== MANUAL NAVIGATION SIMULATION =====\n";
+    cout << "Drive a robot step by step and see the path stack build up.\n";
+    cout << "Use 'O' to simulate an obstacle - the last step is backtracked.\n\n";
+
+    // Show available robots
+    Robot* temp = robotHead;
+    do {
+        cout << "  Robot [" << temp->getID() << "] - " << temp->getStatus() << "\n";
+        temp = temp->nextRobot;
+    } while (temp != robotHead);
+
+    cout << "\nEnter Robot ID: ";
+    string input;
+    getline(cin, input);
+
+    bool valid = !input.empty();
+    for (int i = 0; i < (int)input.length() && valid; i++) {
+        if (input[i] < '0' || input[i] > '9') valid = false;
+    }
+    if (!valid) { cout << "Invalid Robot ID.\n"; return; }
+
+    int robotID = stoi(input);
+    Robot* target = nullptr;
+    temp = robotHead;
+    do {
+        if (temp->getID() == robotID) { target = temp; break; }
+        temp = temp->nextRobot;
+    } while (temp != robotHead);
+
+    if (target == nullptr) { cout << "Robot [" << robotID << "] not found.\n"; return; }
+    if (target->getStatus() == "Busy") {
+        cout << "Robot [" << robotID << "] is currently Busy.\n"; return;
+    }
+    if (target->getStatus() == "Maintenance") {
+        cout << "Robot [" << robotID << "] is under Maintenance.\n"; return;
+    }
+
+    // Clear any leftover path from a previous simulation
+    while (target->getStack() != nullptr) target->popStep();
+
+    cout << "\nRobot [" << robotID << "] ready.\n";
+    cout << "Commands: F(orward)  B(ackward)  L(eft)  R(ight)\n";
+    cout << "          O(bstacle - backtrack last step)  D(one)\n\n";
+
+    int stepCount = 0;
+
+    while (true) {
+        cout << "  [" << stepCount << " step(s) recorded] > ";
+        getline(cin, input);
+
+        if (input.empty()) { cout << "  Use F / B / L / R / O / D\n"; continue; }
+
+        char cmd = (char)toupper((unsigned char)input[0]);
+
+        if (cmd == 'F') {
+            target->pushStep("Move Forward", "Move Backward");
+            cout << "  -> Moved Forward  (reverse: Move Backward)\n";
+            stepCount++;
+        } else if (cmd == 'B') {
+            target->pushStep("Move Backward", "Move Forward");
+            cout << "  -> Moved Backward  (reverse: Move Forward)\n";
+            stepCount++;
+        } else if (cmd == 'L') {
+            target->pushStep("Turn Left", "Turn Right");
+            cout << "  -> Turned Left  (reverse: Turn Right)\n";
+            stepCount++;
+        } else if (cmd == 'R') {
+            target->pushStep("Turn Right", "Turn Left");
+            cout << "  -> Turned Right  (reverse: Turn Left)\n";
+            stepCount++;
+        } else if (cmd == 'O') {
+            // Obstacle: pop the last step (backtrack)
+            if (target->getStack() == nullptr) {
+                cout << "  No steps recorded yet - nothing to backtrack.\n";
+            } else {
+                cout << "  [!] Obstacle! Backtracking: "
+                     << target->getStack()->backAction << "\n";
+                target->popStep();
+                if (stepCount > 0) stepCount--;
+                cout << "  -> Robot backtracked. " << stepCount << " step(s) remaining.\n";
+            }
+        } else if (cmd == 'D') {
+            break;
+        } else {
+            cout << "  Unknown command. Use F / B / L / R / O / D\n";
+        }
+    }
+
+    if (target->getStack() == nullptr) {
+        cout << "\nNo steps recorded. Simulation ended.\n";
+        return;
+    }
+
+    cout << "\n" << stepCount << " step(s) recorded for Robot [" << robotID << "].\n";
+
+    // Show the complete forward and reverse path
+    target->printNavigationLog();
+
+    // Ask whether to execute the return journey
+    cout << "\nExecute reverse journey now? (Y/N): ";
+    getline(cin, input);
+    if (!input.empty() && (char)toupper((unsigned char)input[0]) == 'Y') {
+        cout << "\n[Reverse Navigation]\n";
+        target->goBack();
+    } else {
+        // Clear the stack without executing goBack()
+        while (target->getStack() != nullptr) target->popStep();
+        cout << "Return skipped. Stack cleared.\n";
+    }
+    cout << "=========================================\n";
+}
+
+// ===================== View Navigation Log =====================
+// Shows the current stack contents for any robot (non-destructive).
+void viewRobotNavigationLog() {
+    if (robotHead == nullptr) { cout << "No robots in the system.\n"; return; }
 
     cout << "\n===== ROBOT STATUS =====\n";
     Robot* temp = robotHead;
@@ -395,7 +488,6 @@ void viewRobotNavigationLog() {
     if (!valid) { cout << "Invalid Robot ID.\n"; return; }
 
     int robotID = stoi(input);
-
     Robot* target = nullptr;
     temp = robotHead;
     do {
@@ -403,10 +495,7 @@ void viewRobotNavigationLog() {
         temp = temp->nextRobot;
     } while (temp != robotHead);
 
-    if (target == nullptr) {
-        cout << "Robot [" << robotID << "] not found.\n";
-        return;
-    }
+    if (target == nullptr) { cout << "Robot [" << robotID << "] not found.\n"; return; }
 
     if (target->getStack() == nullptr) {
         cout << "Robot [" << robotID << "] has no active navigation path.\n";
@@ -416,14 +505,10 @@ void viewRobotNavigationLog() {
 }
 
 // ===================== View All Navigation History =====================
-// Shows the full NavRecord history for every robot that has
-// completed at least one trip. Covers the "Complete Navigation Log"
-// expected output from the assignment.
+// Shows the full NavRecord linked list for every robot that has
+// completed at least one order or simulation.
 void viewAllNavigationHistory() {
-    if (robotHead == nullptr) {
-        cout << "No robots in the system.\n";
-        return;
-    }
+    if (robotHead == nullptr) { cout << "No robots in the system.\n"; return; }
 
     cout << "\n===== COMPLETE NAVIGATION HISTORY (ALL ROBOTS) =====\n";
 
@@ -437,9 +522,7 @@ void viewAllNavigationHistory() {
         temp = temp->nextRobot;
     } while (temp != robotHead);
 
-    if (!anyHistory) {
-        cout << "  No history yet. Complete an order first.\n";
-    }
+    if (!anyHistory) cout << "  No history yet. Complete an order first.\n";
 
     cout << "=====================================================\n";
 }

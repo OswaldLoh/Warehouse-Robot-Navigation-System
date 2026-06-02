@@ -87,15 +87,16 @@ void navigationMenu() {
     do {
         cout << "\n===== ROBOT NAVIGATION & PATH TRACKING MODULE =====\n";
         cout << "1. Complete Next In-Progress Order\n";
-        cout << "2. View Robot Navigation Log\n";
-        cout << "3. View All Navigation History\n";
-        cout << "4. Back to Main Menu\n";
+        cout << "2. Manual Navigation Simulation (F/B/L/R + Obstacle)\n";
+        cout << "3. View Robot Navigation Log\n";
+        cout << "4. View All Navigation History\n";
+        cout << "5. Back to Main Menu\n";
         cout << "====================================================\n";
         cout << "Enter choice: ";
         getline(cin, input);
 
-        if (input.length() != 1 || input[0] < '1' || input[0] > '4') {
-            cout << "\nInvalid input. Please enter 1, 2, 3, or 4.\n";
+        if (input.length() != 1 || input[0] < '1' || input[0] > '5') {
+            cout << "\nInvalid input. Please enter 1 - 5.\n";
             continue;
         }
 
@@ -104,12 +105,14 @@ void navigationMenu() {
 
         switch (choice) {
             case 1: completeOrder(); break;
-            case 2: viewRobotNavigationLog(); break;
-            case 3: viewAllNavigationHistory(); break;
-            case 4: break;
+            case 2: manualNavigationSimulation(); break;
+            case 3: viewRobotNavigationLog(); break;
+            case 4: viewAllNavigationHistory(); break;
+            case 5: break;
         }
-    } while (choice != 4);
+    } while (choice != 5);
 }
+
 
 
 // Module 4: Item Search & Management
