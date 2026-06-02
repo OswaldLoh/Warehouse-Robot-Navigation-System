@@ -87,13 +87,13 @@ void Robot::printReversePath() {
         cout << "  Step " << (i + 1) << ": " << steps[i]->backAction << "\n";
     }
 }
-
+ 
 // Print both paths together as a complete round-trip log
 void Robot::printNavigationLog() {
-    cout << "\n===== NAVIGATION LOG: Robot [" << ID << "] =====\n";
+    cout << "\n============= NAVIGATION LOG: Robot [" << ID << "] ============\n";
     printForwardPath();
     printReversePath();
-    cout << "===============================================\n";
+    cout << "====================================================\n";
 }
 
 // ===================== Navigation History =====================
@@ -166,7 +166,7 @@ void Robot::displayNavHistory() {
 // Pops every step and executes its backAction.
 // LIFO ensures the last step taken is always undone first.
 void Robot::goBack() {
-    cout << "\n\nRobot [" << ID << "] returning to base...\n";
+    cout << "\nRobot [" << ID << "] returning to base...\n";
 
     if (stackTop == nullptr) {
         cout << "  (No path recorded - robot is already at base)\n";
@@ -310,7 +310,7 @@ void completeOrder() {
     cout << " Robot [" << assignedRobot->getID()
          << "] | Order #" << order->orderID
          << " | Item: \"" << order->itemName << "\"\n";
-    cout << "===================================================\n";
+    cout << "====================================================\n";
 
     // Forward navigation
     cout << "\n[Forward Navigation]\n";
@@ -324,7 +324,7 @@ void completeOrder() {
         cout << "\nOrder #" << order->orderID
              << " marked as Failed (item not in database). Robot ["
              << assignedRobot->getID() << "] is now Available.\n";
-        cout << "===================================================\n";
+        cout << "====================================================\n";
         return;
     }
 
@@ -345,7 +345,7 @@ void completeOrder() {
     completedOrders.push(order);
 
     cout << "\nOrder #" << order->orderID << " completed!\n";
-    cout << "===================================================\n";
+    cout << "====================================================\n";
 }
 
 // ===================== Manual Navigation Simulation =====================
@@ -360,7 +360,7 @@ void manualNavigationSimulation() {
         return;
     }
 
-    cout << "\n===== MANUAL NAVIGATION SIMULATION =====\n";
+    cout << "\n=========== MANUAL NAVIGATION SIMULATION ===========\n";
     cout << "Drive a robot step by step and see the path stack build up.\n";
     cout << "Use 'O' to simulate an obstacle - the last step is backtracked.\n\n";
 
@@ -469,7 +469,7 @@ void manualNavigationSimulation() {
         while (target->getStack() != nullptr) target->popStep();
         cout << "Return skipped. Stack cleared.\n";
     }
-    cout << "=========================================\n";
+    cout << "====================================================\n";
 }
 
 // ===================== View Navigation Log =====================
