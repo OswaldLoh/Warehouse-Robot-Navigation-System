@@ -113,7 +113,7 @@ void displayItemsSorted() {
         return;
     }
 
-    cout << "\n===== ITEMS (Sorted by ID) =====\n";
+    cout << "\n=============== ITEMS (Sorted by ID) ===============\n";
     inOrderTraversal(bstRoot);
-    cout << "================================\n";
+    cout << "====================================================\n";
 }
