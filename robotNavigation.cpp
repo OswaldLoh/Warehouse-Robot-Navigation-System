@@ -504,5 +504,4 @@ void viewAllNavigationHistory() {
 
     if (!anyHistory) cout << "  No history yet. Complete an order first.\n";
 
-    cout << "====================================================\n";
 }

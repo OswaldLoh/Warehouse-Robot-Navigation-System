@@ -96,6 +96,7 @@ TreeNode* insertBST(TreeNode* root, Item* item);
 TreeNode* searchBST(TreeNode* root, int itemID);
 TreeNode* deleteBST(TreeNode* root, int itemID);
 TreeNode* findMinNode(TreeNode* root);
+TreeNode* findMaxNode(TreeNode* root);
 void inOrderTraversal(TreeNode* root);
 void displayItemsSorted();
 

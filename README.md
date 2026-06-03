@@ -35,7 +35,7 @@ All five modules work together as one cohesive system to ensure efficient, fair,
 
 ### Task 1 — Order Management Module
 
-**Responsible Member:** `[INSERT MEMBER NAME HERE]`
+**Responsible Member:** TP073235 Ian Lim
 
 **Source Files:**
 - `orderManagement.cpp` — Implementation of all order management functions
@@ -49,7 +49,7 @@ This module handles the lifecycle of customer orders from arrival to completion.
 
 ### Task 2 — Robot Assignment Module
 
-**Responsible Member:** `[INSERT MEMBER NAME HERE]`
+**Responsible Member:**  TP074808 Chan Kar Jun
 
 **Source Files:**
 - `robotManagement.cpp` — Implementation of robot initialisation, assignment, and maintenance functions
@@ -63,7 +63,7 @@ This module manages a pool of robots using a circular linked list. Robots are in
 
 ### Task 3 — Robot Navigation & Path Tracking Module
 
-**Responsible Member:** `[INSERT MEMBER NAME HERE]`
+**Responsible Member:** TP085239 Ng Ern Chi
 
 **Source Files:**
 - `robotNavigation.cpp` — Implementation of navigation, path tracking, and history functions
@@ -78,7 +78,7 @@ This module controls robot movement within the warehouse and enables path retrac
 
 ### Task 4 — Item Search & Management Module
 
-**Responsible Member:** `[INSERT MEMBER NAME HERE]`
+**Responsible Member:** TP074412 Foo Kim Chean
 
 **Source Files:**
 - `itemManagement.cpp` — Implementation of item CRUD operations and display functions
@@ -95,7 +95,7 @@ This module manages the item inventory within the warehouse. Items are stored in
 
 ### Task 5 — Warehouse Layout & Navigation Module
 
-**Responsible Member:** `[INSERT MEMBER NAME HERE]`
+**Responsible Member:** TP086085 Oswald Loh Kar Tzun
 
 **Source Files:**
 - `graph.cpp` — Implementation of the warehouse graph, Dijkstra's algorithm, and graph display

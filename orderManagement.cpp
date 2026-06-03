@@ -54,8 +54,7 @@ void OrderQueue::display() {
         string robotCol = (temp->assignedRobotID != -1)
                           ? "Robot [" + to_string(temp->assignedRobotID) + "]"
                           : "(unassigned)";
-        cout << "  "
-             << left
+        cout << left
              << setw(10) << ("#" + to_string(temp->orderID))
              << setw(22) << temp->itemName
              << setw(16) << robotCol
@@ -88,8 +87,7 @@ void CompletedStack::display() {
         string robotCol = (temp->assignedRobotID != -1)
                           ? "Robot [" + to_string(temp->assignedRobotID) + "]"
                           : "(unassigned)";
-        cout << "  "
-             << left
+        cout << left
              << setw(10) << ("#" + to_string(temp->orderID))
              << setw(22) << temp->itemName
              << setw(16) << robotCol
@@ -147,7 +145,7 @@ void assignOrders() {
     while (!pendingOrders.isEmpty()) {
         Robot* robot = findAvailableRobot();
         if (robot == nullptr) {
-            cout << "No more available robots. Remaining orders stay in pending queue.\n";
+            cout << "No more available robots.\nRemaining orders stay in pending queue.\n";
             break;
         }
 
@@ -169,32 +167,24 @@ void assignOrders() {
 
 // Shared table header printed above every order list
 static void printTableHeader() {
-    cout << "  "
-         << left
+    cout << left
          << setw(10) << "Order"
          << setw(22) << "Item"
          << setw(16) << "Robot"
          << "Status" << "\n";
-    cout << "  " << string(60, '-') << "\n";
+    cout << string(60, '-') << "\n";
 }
 
 // Display all order statuses across the 3 data structures
 void viewOrderStatus() {
     cout << "\n=================== ORDER STATUS ===================\n";
+    printTableHeader();
 
-    cout << "\n[PENDING] (" << pendingOrders.getCount() << " orders)\n";
-    if (pendingOrders.isEmpty()) cout << "  (none)\n";
-    else { printTableHeader(); pendingOrders.display(); }
+    pendingOrders.display();
+    inProgressOrders.display();
+    completedOrders.display();
 
-    cout << "\n[IN PROGRESS] (" << inProgressOrders.getCount() << " orders)\n";
-    if (inProgressOrders.isEmpty()) cout << "  (none)\n";
-    else { printTableHeader(); inProgressOrders.display(); }
-
-    cout << "\n[COMPLETED / FAILED] (" << completedOrders.getCount() << " orders)\n";
-    if (completedOrders.isEmpty()) cout << "  (none)\n";
-    else { printTableHeader(); completedOrders.display(); }
-
-    cout << "\n====================================================\n";
+    cout << "====================================================\n";
 }
 
 // Display only pending orders

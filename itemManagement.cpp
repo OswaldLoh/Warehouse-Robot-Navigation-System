@@ -40,23 +40,14 @@ void searchItem() {
 
 // Insert New Item
 void insertItem() {
+    // Auto-generate ID: largest existing ID + 1, or 1 if database is empty
+    int newID = 1;
+    TreeNode* maxNode = findMaxNode(bstRoot);
+    if (maxNode != nullptr) newID = maxNode->item->ID + 1;
+
+    cout << "Auto-generated Item ID: " << newID << "\n";
+
     string input;
-    cout << "Enter Item ID: ";
-    getline(cin, input);
-
-    bool valid = !input.empty();
-    for (int i = 0; i < (int)input.length() && valid; i++) {
-        if (input[i] < '0' || input[i] > '9') valid = false;
-    }
-    if (!valid) { cout << "Invalid ID.\n"; return; }
-
-    int newID = stoi(input);
-
-    // Check for duplicate ID
-    if (findItemByID(getWarehouseHead(), newID) != nullptr) {
-        cout << "Item with ID " << newID << " already exists.\n";
-        return;
-    }
 
     cout << "Enter Item Name: ";
     string newName;

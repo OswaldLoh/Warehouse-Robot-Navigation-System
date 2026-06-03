@@ -55,6 +55,15 @@ TreeNode* findMinNode(TreeNode* root) {
     return current;
 }
 
+// Find the node with the maximum value (rightmost node)
+TreeNode* findMaxNode(TreeNode* root) {
+    TreeNode* current = root;
+    while (current != nullptr && current->right != nullptr) {
+        current = current->right;
+    }
+    return current;
+}
+
 // Delete a node by Item ID from the BST
 TreeNode* deleteBST(TreeNode* root, int itemID) {
     if (root == nullptr) return nullptr;
