@@ -21,8 +21,6 @@ struct Item {
     int aisleID;
     int shelfID;
 
-    Item* left;
-    Item* right;
     Item* next;         // For shelf linked list
 
     Item(int id, std::string itemName, char zID, int aID, int sID) {
@@ -31,8 +29,6 @@ struct Item {
         zoneID = zID;
         aisleID = aID;
         shelfID = sID;
-        left = nullptr;
-        right = nullptr;
         next = nullptr;
     }
 };

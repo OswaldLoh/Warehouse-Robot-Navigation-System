@@ -212,14 +212,19 @@ static Item* findItemByName(Zone* head, const string& name) {
 }
 
 // Build and push navigation steps using Dijkstra's shortest path.
-// Returns true if the item was found and a path was computed.
-// Returns false if the item is not in the database — robot stays put.
+//
+// Obstacle simulation: for paths with 4+ nodes (3+ hops), an obstacle
+// is detected at the 2nd hop. The robot backtracks (popStep) then
+// re-routes via alternate corridor, demonstrating stack backtracking
+// on a real computed path.
+//
+// Returns false if the item is not in the database (order marked Failed).
 static bool navigateRobot(Robot* robot, const string& itemName) {
     Item* item = findItemByName(getWarehouseHead(), itemName);
 
     if (item == nullptr) {
         cout << "[!] Item \"" << itemName << "\" not found in the warehouse database.\n";
-        cout << "Robot stays at base. No movement recorded.\n";
+        cout << "    Robot stays at base. No movement recorded.\n";
         return false;
     }
 
@@ -236,16 +241,42 @@ static bool navigateRobot(Robot* robot, const string& itemName) {
     }
 
     cout << " Target : " << nodeLabel(targetNode) << "\n";
-    cout << " Path   : " << pathLen - 1 << " hop(s) | computed by Dijkstra\n";
+    cout << " Path   : " << pathLen - 1 << " hop(s) | computed by Dijkstra\n\n";
 
-    cout << "\n";
+    // Obstacle simulation: trigger for paths with 4+ nodes (3+ hops).
+    // At the 2nd hop, an obstacle is detected — robot backtracks 1 step
+    // via popStep() then re-routes via alternate corridor to the same node.
+    bool obstacleSimulated = (pathLen >= 4);
+    bool obstacleHandled   = false;
+    int  stepNum           = 1;
 
-    // Push one step per hop in the optimal path
     for (int i = 1; i < pathLen; i++) {
-        string fwd = "Move to "      + nodeLabel(path[i]);
+        string fwd = "Move to "     + nodeLabel(path[i]);
         string bwd = "Return from " + nodeLabel(path[i]);
-        cout << "  Step " << i << ": " << fwd << "\n";
-        robot->pushStep(fwd, bwd);
+
+        if (obstacleSimulated && !obstacleHandled && i == 2) {
+            // Obstacle at path[2] — demonstrate backtracking
+            cout << "  Step " << stepNum << ": Attempting " << fwd << "...\n";
+            cout << "  [!] OBSTACLE detected at " << nodeLabel(path[i]) << "!\n";
+
+            // Backtrack: pop the last step off the stack (O(1))
+            if (robot->getStack() != nullptr) {
+                cout << "  Backtrack: " << robot->getStack()->backAction << "\n";
+                robot->popStep();
+                stepNum--;
+            }
+
+            // Re-route: take alternate corridor to reach the same node
+            string altFwd = "Move to " + nodeLabel(path[i]) + " (alt route)";
+            string altBwd = "Return from " + nodeLabel(path[i]) + " (alt route)";
+            cout << "  Re-routing via alternate corridor\n";
+            cout << "  Step " << stepNum++ << ": " << altFwd << "\n";
+            robot->pushStep(altFwd, altBwd);
+            obstacleHandled = true;
+        } else {
+            cout << "  Step " << stepNum++ << ": " << fwd << "\n";
+            robot->pushStep(fwd, bwd);
+        }
     }
 
     return true;
@@ -308,9 +339,11 @@ void completeOrder() {
     // Save trip to history BEFORE goBack() clears the stack
     assignedRobot->saveNavRecord(order->orderID, order->itemName);
 
-    // Reverse navigation — goBack() pops each Step and prints its backAction,
-    // showing the reverse path live as the robot returns to base.
-    cout << "\n[Reverse Navigation]";
+    // Show the stored forward path from the stack (non-destructive read)
+    assignedRobot->printForwardPath();
+
+    // Reverse navigation — goBack() pops each Step and executes its backAction
+    cout << "\n[Reverse Navigation]\n";
     assignedRobot->goBack();
 
 
@@ -429,8 +462,14 @@ void manualNavigationSimulation() {
 
     cout << "\n" << stepCount << " step(s) recorded for Robot [" << robotID << "].\n";
 
-    // Show the complete forward and reverse path
-    target->printNavigationLog();
+    // Show the stored forward path only — goBack() shows the reverse during execution.
+    // printForwardPath() is used here (not printNavigationLog) to avoid showing
+    // the reverse path twice: once as a preview and again during goBack() execution.
+    target->printForwardPath();
+
+    // Save this simulation trip to NavRecord history BEFORE goBack() clears the stack.
+    // orderID = 0, itemName = "Manual Simulation" since there is no real order.
+    target->saveNavRecord(0, "Manual Simulation");
 
     // Ask whether to execute the return journey
     cout << "\nExecute reverse journey now? (Y/N): ";

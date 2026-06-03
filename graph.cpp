@@ -299,10 +299,10 @@ void routeGenerationSimulation() {
         simRobot->pushStep(fwd, bwd);
     }
 
-    // Save nav record before goBack() clears the stack
-    string routeLabel = "Route Sim (" + nodeLabel(startNode) + " -> " + nodeLabel(endNode) + ")";
+    // Show the stored forward path from the stack before executing the return
+    simRobot->printForwardPath();
 
-    // --- Execute return journey ---
+    // Execute return journey — LIFO pops each step in reverse order
     cout << "\n[Reverse Navigation]\n";
     simRobot->goBack();
 
