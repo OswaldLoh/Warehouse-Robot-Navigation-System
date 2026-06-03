@@ -111,47 +111,80 @@ void storeItem(Zone* head, Item* item) {
     cout << "Warning: Zone " << item->zoneID << " not found!" << endl;
 }
 
-// ==================== Display Warehouse ====================
+// ==================== Display Warehouse (Visual Tree) ====================
+// Prints a textual tree of the warehouse hierarchy using box-drawing
+// characters so zones, aisles, shelves and items are visually connected.
 
 void displayWarehouse(Zone* head) {
-    cout << "\n=============== WAREHOUSE INVENTORY ================\n";
+    cout << "\n====================================================\n";
+    cout << "           WAREHOUSE LAYOUT (VISUAL TREE)\n";
+    cout << "====================================================\n";
+    cout << "WAREHOUSE\n";
 
     Zone* currentZone = head;
     while (currentZone != nullptr) {
-        cout << "\n[Zone " << currentZone->ID << "]" << endl;
+        bool lastZone = (currentZone->nextZone == nullptr);
+        cout << (lastZone ? "\xc0\xc4\xc4 " : "\xc3\xc4\xc4 ")   // +-- or L--
+             << "Zone " << currentZone->ID << "\n";
+
+        string zonePrefix = lastZone ? "    " : "\xb3   ";         // "    " or "|   "
 
         Aisle* currentAisle = currentZone->headAisle;
         while (currentAisle != nullptr) {
-            cout << "  Aisle " << currentAisle->ID << ":" << endl;
+            bool lastAisle = (currentAisle->nextAisle == nullptr);
+            cout << zonePrefix
+                 << (lastAisle ? "\xc0\xc4\xc4 " : "\xc3\xc4\xc4 ")
+                 << "Aisle " << currentAisle->ID << "\n";
+
+            string aislePrefix = zonePrefix + (lastAisle ? "    " : "\xb3   ");
 
             Shelf* currentShelf = currentAisle->headShelf;
             while (currentShelf != nullptr) {
-                cout << "    Shelf " << currentShelf->ID << ": ";
+                bool lastShelf = (currentShelf->nextShelf == nullptr);
+                cout << aislePrefix
+                     << (lastShelf ? "\xc0\xc4\xc4 " : "\xc3\xc4\xc4 ")
+                     << "Shelf " << currentShelf->ID;
 
-                Item* currentItem = currentShelf->headItem;
-                if (currentItem == nullptr) {
-                    cout << "(empty)";
-                } else {
+                // Count items so we know whether to show them inline or as children
+                int itemCount = 0;
+                Item* tmp = currentShelf->headItem;
+                while (tmp != nullptr) { itemCount++; tmp = tmp->next; }
+
+                if (itemCount == 0) {
+                    cout << "  (empty)\n";
+                } else if (itemCount <= 2) {
+                    // Short shelf: list items inline
+                    cout << ":  ";
+                    Item* it = currentShelf->headItem;
                     bool first = true;
-                    while (currentItem != nullptr) {
-                        if (!first) cout << ", ";
-                        cout << "[" << currentItem->ID << "] " << currentItem->name;
+                    while (it != nullptr) {
+                        if (!first) cout << ",  ";
+                        cout << "[" << it->ID << "] " << it->name;
                         first = false;
-                        currentItem = currentItem->next;
+                        it = it->next;
+                    }
+                    cout << "\n";
+                } else {
+                    // Long shelf: list items as sub-children
+                    cout << "  (" << itemCount << " items)\n";
+                    string shelfPrefix = aislePrefix + (lastShelf ? "    " : "\xb3   ");
+                    Item* it = currentShelf->headItem;
+                    while (it != nullptr) {
+                        bool lastItem = (it->next == nullptr);
+                        cout << shelfPrefix
+                             << (lastItem ? "\xc0\xc4\xc4 " : "\xc3\xc4\xc4 ")
+                             << "[" << it->ID << "] " << it->name << "\n";
+                        it = it->next;
                     }
                 }
-                cout << endl;
 
                 currentShelf = currentShelf->nextShelf;
             }
-
             currentAisle = currentAisle->nextAisle;
         }
-
         currentZone = currentZone->nextZone;
     }
-
-    cout << "\n====================================================\n";
+    cout << "====================================================\n";
 }
 
 // ==================== Accessor ====================

@@ -228,7 +228,7 @@ static bool navigateRobot(Robot* robot, const string& itemName) {
 
     // Run Dijkstra from Base (node 0) to the target shelf node
     int path[GRAPH_NODES];
-    int pathLen = dijkstra(targetNode, path);
+    int pathLen = dijkstra(BASE_NODE, targetNode, path);
 
     if (pathLen == 0) {
         cout << "[!] Dijkstra: no path found to " << nodeLabel(targetNode) << ".\n";

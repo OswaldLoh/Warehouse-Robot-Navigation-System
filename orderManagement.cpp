@@ -5,6 +5,7 @@
 //   - CompletedStack (LIFO linked list) - holds completed orders, newest on top
 #include <iostream>
 #include <string>
+#include <iomanip>
 #include "headerFiles/order.h"
 #include "headerFiles/robot.h"
 
@@ -50,11 +51,15 @@ Order* OrderQueue::dequeue() {                  // Remove and return order from 
 void OrderQueue::display() {
     Order* temp = front;
     while (temp != nullptr) {
-        cout << "Order #" << temp->orderID
-             << " | Item: " << temp->itemName;
-        if (temp->assignedRobotID != -1)
-            cout << " | Robot [" << temp->assignedRobotID << "]";
-        cout << " | Status: " << temp->status << "\n";
+        string robotCol = (temp->assignedRobotID != -1)
+                          ? "Robot [" + to_string(temp->assignedRobotID) + "]"
+                          : "(unassigned)";
+        cout << "  "
+             << left
+             << setw(10) << ("#" + to_string(temp->orderID))
+             << setw(22) << temp->itemName
+             << setw(16) << robotCol
+             << temp->status << "\n";
         temp = temp->next;
     }
 }
@@ -80,10 +85,15 @@ void CompletedStack::push(Order* order) {       // Push completed order onto the
 void CompletedStack::display() {
     Order* temp = top;
     while (temp != nullptr) {
-        cout << "  Order #" << temp->orderID
-             << " | Item: " << temp->itemName
-             << " | Robot [" << temp->assignedRobotID << "]"
-             << " | Status: " << temp->status << "\n";
+        string robotCol = (temp->assignedRobotID != -1)
+                          ? "Robot [" + to_string(temp->assignedRobotID) + "]"
+                          : "(unassigned)";
+        cout << "  "
+             << left
+             << setw(10) << ("#" + to_string(temp->orderID))
+             << setw(22) << temp->itemName
+             << setw(16) << robotCol
+             << temp->status << "\n";
         temp = temp->next;
     }
 }
@@ -157,21 +167,32 @@ void assignOrders() {
 }
 
 
+// Shared table header printed above every order list
+static void printTableHeader() {
+    cout << "  "
+         << left
+         << setw(10) << "Order"
+         << setw(22) << "Item"
+         << setw(16) << "Robot"
+         << "Status" << "\n";
+    cout << "  " << string(60, '-') << "\n";
+}
+
 // Display all order statuses across the 3 data structures
 void viewOrderStatus() {
     cout << "\n=================== ORDER STATUS ===================\n";
 
     cout << "\n[PENDING] (" << pendingOrders.getCount() << " orders)\n";
     if (pendingOrders.isEmpty()) cout << "  (none)\n";
-    else pendingOrders.display();
+    else { printTableHeader(); pendingOrders.display(); }
 
     cout << "\n[IN PROGRESS] (" << inProgressOrders.getCount() << " orders)\n";
     if (inProgressOrders.isEmpty()) cout << "  (none)\n";
-    else inProgressOrders.display();
+    else { printTableHeader(); inProgressOrders.display(); }
 
     cout << "\n[COMPLETED / FAILED] (" << completedOrders.getCount() << " orders)\n";
     if (completedOrders.isEmpty()) cout << "  (none)\n";
-    else completedOrders.display();
+    else { printTableHeader(); completedOrders.display(); }
 
     cout << "\n====================================================\n";
 }
@@ -183,6 +204,7 @@ void viewPendingOrders() {
         return;
     }
     cout << "================== PENDING ORDERS ==================\n";
+    printTableHeader();
     pendingOrders.display();
     cout << "====================================================\n";
 }
@@ -194,6 +216,7 @@ void viewInProgressOrders() {
         return;
     }
     cout << "================ IN PROGRESS ORDERS ================\n";
+    printTableHeader();
     inProgressOrders.display();
     cout << "====================================================\n";
 }
@@ -205,6 +228,7 @@ void viewCompletedOrders() {
         return;
     }
     cout << "=========== COMPLETED / FAILED ORDERS  ===========\n";
+    printTableHeader();
     completedOrders.display();
     cout << "====================================================\n";
 }

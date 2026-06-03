@@ -35,12 +35,16 @@ int locationToNode(char zone, int aisle, int shelf);
 //       nodeLabel(0)  -> "Base"
 string nodeLabel(int nodeID);
 
-// Dijkstra shortest path from BASE_NODE to targetNode.
-//   path[] is filled with node IDs in order: Base, ..., target.
+// Dijkstra shortest path from sourceNode to targetNode.
+//   Pass BASE_NODE as sourceNode for standard Base -> shelf routing.
+//   path[] is filled with node IDs in order: source, ..., target.
 //   Returns the number of nodes in the path (0 if unreachable).
-int dijkstra(int targetNode, int path[GRAPH_NODES]);
+int dijkstra(int sourceNode, int targetNode, int path[GRAPH_NODES]);
 
 // Print the full adjacency list with edge costs (for the warehouse menu)
 void printWarehouseGraph();
+
+// Prompt the user for start/end locations and simulate Dijkstra navigation
+void routeGenerationSimulation();
 
 #endif

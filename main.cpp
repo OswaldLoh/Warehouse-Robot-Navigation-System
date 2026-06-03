@@ -165,15 +165,16 @@ void warehouseLayoutMenu() {
 
     do {
         cout << "\n======= WAREHOUSE LAYOUT & NAVIGATION MODULE =======\n";
-        cout << "1. View Items by Location\n";
+        cout << "1. View Warehouse Layout (Visual Tree)\n";
         cout << "2. View Graph Connections & Edge Costs\n";
-        cout << "3. Back to Main Menu\n";
+        cout << "3. Route Generation Simulation\n";
+        cout << "4. Back to Main Menu\n";
         cout << "====================================================\n";
         cout << ">>> ";
         getline(cin, input);
 
-        if (input.length() != 1 || input[0] < '1' || input[0] > '3') {
-            cout << "\nInvalid input. Please enter 1, 2, or 3.\n";
+        if (input.length() != 1 || input[0] < '1' || input[0] > '4') {
+            cout << "\nInvalid input. Please enter 1, 2, 3, or 4.\n";
             continue;
         }
 
@@ -183,9 +184,10 @@ void warehouseLayoutMenu() {
         switch (choice) {
             case 1: displayWarehouse(getWarehouseHead()); break;
             case 2: printWarehouseGraph(); break;
-            case 3: break;
+            case 3: routeGenerationSimulation(); break;
+            case 4: break;
         }
-    } while (choice != 3);
+    } while (choice != 4);
 }
 
 // ==================== Main ====================
