@@ -21,7 +21,7 @@
 //   Base -> zone entry points              : 2 / 3
 
 #include <string>
-
+using namespace std;
 
 const int GRAPH_NODES = 19;
 const int BASE_NODE   = 0;
@@ -33,7 +33,7 @@ int locationToNode(char zone, int aisle, int shelf);
 // Return a human-readable label for a node ID
 // e.g.  nodeLabel(7)  -> "Zone B | Aisle 1 | Shelf 1"
 //       nodeLabel(0)  -> "Base"
-std::string nodeLabel(int nodeID);
+string nodeLabel(int nodeID);
 
 // Dijkstra shortest path from BASE_NODE to targetNode.
 //   path[] is filled with node IDs in order: Base, ..., target.
