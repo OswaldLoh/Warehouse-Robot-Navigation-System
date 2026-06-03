@@ -6,9 +6,9 @@
 // Defines the physical connections between warehouse locations as an
 // undirected weighted graph and provides Dijkstra shortest-path search.
 
+using namespace std;
 
 #include <string>
-// Note: std:: prefix used — 'using namespace std' omitted from headers
 
 const int GRAPH_NODES = 19;
 const int BASE_NODE   = 0;
@@ -20,7 +20,7 @@ int locationToNode(char zone, int aisle, int shelf);
 // Return a human-readable label for a node ID
 // e.g.  nodeLabel(7)  -> "Zone B | Aisle 1 | Shelf 1"
 //       nodeLabel(0)  -> "Base"
-std::string nodeLabel(int nodeID);
+string nodeLabel(int nodeID);
 
 // Dijkstra shortest path from sourceNode to targetNode.
 //   Pass BASE_NODE as sourceNode for standard Base -> shelf routing.
