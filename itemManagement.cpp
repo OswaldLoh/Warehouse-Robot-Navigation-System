@@ -6,8 +6,8 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include "headerFiles/warehouse.h"
-#include "headerFiles/robot.h"      // For findAvailableRobot() and Robot class
+#include "warehouse.h"
+#include "robot.h"      // For findAvailableRobot() and Robot class
 
 
 using namespace std;

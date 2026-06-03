@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <string>
-#include "headerFiles/warehouse.h"
+#include "warehouse.h"
 
 using namespace std;
 

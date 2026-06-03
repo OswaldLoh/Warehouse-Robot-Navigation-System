@@ -7,8 +7,8 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include "headerFiles/order.h"
-#include "headerFiles/robot.h"
+#include "order.h"
+#include "robot.h"
 
 using namespace std;
 

@@ -7,11 +7,11 @@
 
 #include <iostream>
 #include <string>
-#include "headerFiles/robot.h"
-#include "headerFiles/order.h"
-#include "headerFiles/warehouse.h"
-#include "headerFiles/navigation.h"    // Task 3: Robot Navigation & Path Tracking
-#include "headerFiles/graph.h"          // Task 5: Warehouse Graph & Dijkstra
+#include "robot.h"
+#include "order.h"
+#include "warehouse.h"
+#include "navigation.h"    // Task 3: Robot Navigation & Path Tracking
+#include "graph.h"          // Task 5: Warehouse Graph & Dijkstra
 
 using namespace std;
 
@@ -199,7 +199,7 @@ int main() {
     // Initialize warehouse structure and load items from CSV
     initWarehouse();
     int itemCount = 0;
-    Item** items = loadItemsFromCSV("database/items.csv", itemCount);
+    Item** items = loadItemsFromCSV("items.csv", itemCount);
     if (items != nullptr) {
         for (int i = 0; i < itemCount; i++) {
             storeItem(getWarehouseHead(), items[i]);

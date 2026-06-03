@@ -11,8 +11,11 @@
 
 #include <iostream>
 #include <string>
-#include "headerFiles/graph.h"
-#include "headerFiles/robot.h"
+#include "robot.h"
+#include "order.h"
+#include "warehouse.h"
+#include "graph.h"       // Warehouse graph + Dijkstra
+#include "navigation.h"
 
 using namespace std;
 

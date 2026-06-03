@@ -9,11 +9,11 @@
 #include <iostream>
 #include <string>
 #include <cctype>
-#include "headerFiles/robot.h"
-#include "headerFiles/order.h"
-#include "headerFiles/warehouse.h"
-#include "headerFiles/graph.h"       // Warehouse graph + Dijkstra
-#include "headerFiles/navigation.h"
+#include "robot.h"
+#include "order.h"
+#include "warehouse.h"
+#include "graph.h"       // Warehouse graph + Dijkstra
+#include "navigation.h"
 
 using namespace std;
 
