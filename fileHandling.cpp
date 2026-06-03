@@ -1,5 +1,6 @@
-// Task 5 - Warehouse Layout Module
-//
+// Task 4 - Item Search & Management Module
+// TP074412 Foo Kim Chean
+
 // Loads warehouse item data from a CSV file (database/items.csv)
 // at system startup so the warehouse is pre-populated.
 #include <iostream>

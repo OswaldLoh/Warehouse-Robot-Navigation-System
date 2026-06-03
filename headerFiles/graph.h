@@ -2,23 +2,10 @@
 #define GRAPH_H
 
 // Task 5 - Warehouse Graph Module
+// TP086085 Oswald Loh Kar Tzun
 // Defines the physical connections between warehouse locations as an
 // undirected weighted graph and provides Dijkstra shortest-path search.
-//
-// Node scheme (19 nodes total):
-//   Node 0          = Base (robot start/end point)
-//   Nodes 1 - 18   = warehouse shelf locations
-//
-//   Formula: nodeID = 1 + (zoneIndex * 6) + (aisleIndex * 3) + shelfIndex
-//     zoneIndex  = zone  - 'A'   (0 = A, 1 = B, 2 = C)
-//     aisleIndex = aisle - 1     (0 = Aisle 1, 1 = Aisle 2)
-//     shelfIndex = shelf - 1     (0 = Shelf 1, 1 = Shelf 2, 2 = Shelf 3)
-//
-// Edge costs:
-//   Adjacent shelves within the same aisle : 1
-//   Cross-aisle connection (within a zone) : 2
-//   Inter-zone corridor connection         : 2
-//   Base -> zone entry points              : 2 / 3
+
 
 #include <string>
 using namespace std;

@@ -1,5 +1,6 @@
-// Task 5 - Warehouse Layout Module
-//
+// Task 4 — Item Search & Management Module
+// TP074412 Foo Kim Chean
+
 // Models the warehouse as a 3-level hierarchical linked structure:
 //   Zone -> Aisle -> Shelf -> Items (linked list)
 // Supports item storage, display, lookup, and deletion.

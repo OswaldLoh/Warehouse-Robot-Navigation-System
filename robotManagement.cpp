@@ -1,11 +1,10 @@
 // Task 2 - Robot Assignment Module
-//
+// TP074808 Chan Kar Jun
+
 // Manages robots in the warehouse using a Circular Linked List.
 // Robots are arranged in a ring so the scheduler can assign tasks
 // in round-robin order without ever reaching a dead end.
-//
-// Note: Navigation methods (pushStep, popStep, goBack, etc.) are
-// implemented in robotNavigation.cpp (Task 3).
+
 #include <iostream>
 #include <string>
 #include "headerFiles/robot.h"
