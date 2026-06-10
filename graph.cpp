@@ -85,10 +85,7 @@ string nodeLabel(int nodeID) {
 }
 
 // ===================== Dijkstra =====================
-// Standard O(V^2) Dijkstra using arrays (fine for V = 19).
-// Fills path[] with the sequence of node IDs from sourceNode to targetNode.
-// Pass BASE_NODE as sourceNode for the standard Base -> shelf route.
-// Returns the number of nodes in the path, or 0 if unreachable.
+// Main Pathfinding Algorithm
 int dijkstra(int sourceNode, int targetNode, int path[GRAPH_NODES]) {
     int  dist[GRAPH_NODES];
     int  prev[GRAPH_NODES];
@@ -112,11 +109,18 @@ int dijkstra(int sourceNode, int targetNode, int path[GRAPH_NODES]) {
 
         // Relax all edges that touch u (undirected graph)
         for (int e = 0; e < EDGE_COUNT; e++) {
-            int a = EDGES[e].from, b = EDGES[e].to, w = EDGES[e].cost;
-            int v = (a == u) ? b : (b == u) ? a : -1;
+            int start = EDGES[e].from, end = EDGES[e].to, cost = EDGES[e].cost;
+            int v;
+            if (start == u) {
+                v = end;        // u is on the left  → neighbour is right
+            } else if (end == u) {
+                v = start;      // u is on the right → neighbour is left
+            } else {
+                v = -1;         // u is not in this edge at all
+            }    
             if (v == -1 || visited[v]) continue;
-            if (dist[u] + w < dist[v]) {
-                dist[v] = dist[u] + w;
+            if (dist[u] + cost < dist[v]) {
+                dist[v] = dist[u] + cost;
                 prev[v] = u;
             }
         }

@@ -241,7 +241,6 @@ static bool navigateRobot(Robot* robot, const string& itemName) {
     }
 
     cout << " Target : " << nodeLabel(targetNode) << "\n";
-    cout << " Path   : " << pathLen - 1 << " hop(s) | computed by Dijkstra\n\n";
 
     // Obstacle simulation: trigger for paths with 4+ nodes (3+ hops).
     // At the 2nd hop, an obstacle is detected — robot backtracks 1 step
@@ -258,13 +257,7 @@ static bool navigateRobot(Robot* robot, const string& itemName) {
             // Obstacle at path[2] — demonstrate backtracking
             cout << "  Step " << stepNum << ": Attempting " << fwd << "...\n";
             cout << "  [!] OBSTACLE detected at " << nodeLabel(path[i]) << "!\n";
-
-            // Backtrack: pop the last step off the stack (O(1))
-            if (robot->getStack() != nullptr) {
-                cout << "  Backtrack: " << robot->getStack()->backAction << "\n";
-                robot->popStep();
-                stepNum--;
-            }
+            cout << "  Robot holds position at " << nodeLabel(path[i - 1]) << ".\n";
 
             // Re-route: take alternate corridor to reach the same node
             string altFwd = "Move to " + nodeLabel(path[i]) + " (alt route)";
@@ -338,9 +331,6 @@ void completeOrder() {
 
     // Save trip to history BEFORE goBack() clears the stack
     assignedRobot->saveNavRecord(order->orderID, order->itemName);
-
-    // Show the stored forward path from the stack (non-destructive read)
-    assignedRobot->printForwardPath();
 
     // Reverse navigation — goBack() pops each Step and executes its backAction
     cout << "\n[Reverse Navigation]\n";
